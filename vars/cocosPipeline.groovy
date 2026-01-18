@@ -25,8 +25,9 @@ def call(ctx) {
                 trackingSubmodules: false, // 不跟踪子模块的上游分支
                 reference: '',             // 不使用参考仓库
                 parentCredentials: true,   // 使用父仓库的凭据
-                depth: 1,                  // 只克隆最新提交
-                shallow: true              // 浅克隆
+                // 🔥 关键：关闭浅克隆
+                depth: 0,         
+                shallow: false   
             ],
             // 清理工作区：先清理,再进行代码拉取
             [$class: 'CleanBeforeCheckout'], // 在拉取代码之前清理工作区
