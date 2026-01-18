@@ -13,11 +13,11 @@ pipeline {
   }
 
   stages {
-    stage('cocos') {
+    stage('Start') {
       steps { cocosPipeline(this) }
     }
 
-    stage('publish') {
+    stage('Publish') {
       steps {
         publishArtifacts(this)
         updateManifest(this)

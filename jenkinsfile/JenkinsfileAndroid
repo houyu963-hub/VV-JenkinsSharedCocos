@@ -16,15 +16,15 @@ pipeline {
   }
 
   stages {
-    stage('cocos') {
+    stage('Start') {
       steps { cocosPipeline(this) }
     }
 
-    stage('android') {
+    stage('Android') {
       steps { androidBuild(this) }
     }
 
-    stage('publish') {
+    stage('Publish') {
       steps {
         publishArtifacts(this)
         updateManifest(this)

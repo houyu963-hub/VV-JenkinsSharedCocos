@@ -12,7 +12,7 @@ def call(ctx) {
     ctx.env.CREATOR_PATH = 'D:/software/CocosEditors/Creator/3.8.1/CocosCreator.exe'
     ctx.env.BUILD_SCRIPT = 'tools/bat/build.bat'
     
-    stage('拉代码') {
+    stage('GitSCM') {
         checkout([
             $class: 'GitSCM',
             branches: [[name: ctx.params.git_ref]],
@@ -35,7 +35,7 @@ def call(ctx) {
         ])
     }
 
-    stage('构建') {
+    stage('Build') {
         bat """
         call ${ctx.env.BUILD_SCRIPT} ^
             ${ctx.params.platform} ^
