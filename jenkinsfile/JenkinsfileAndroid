@@ -1,0 +1,35 @@
+@Library('jenkins-shared-cocos') _
+
+pipeline {
+  parameters {
+    string(name: 'git_ref', defaultValue:'main')
+    choice(name: 'channel', choices: ['official','xiaomi'])
+    choice(name: 'env', choices: ['dev','prod'])
+    choice(name: 'mode', choices: ['release','debug'])
+    choice(name: 'version_name', defaultValue: '')
+    choice(name: 'version_code', defaultValue: '')
+    booleanParam(name: 'apk', defaultValue: false)
+    booleanParam(name: 'clean', defaultValue: false)
+  }
+
+  stages {
+    stage('cocos') {
+      steps {
+        script {
+          cocosPipeline()
+        }
+      }
+    }
+
+    stage('android') {
+      steps { androidBuild(this) }
+    }
+
+    stage('publish') {
+      steps {
+        publishArtifacts(this)
+        updateManifest(this)
+      }
+    }
+  }
+}

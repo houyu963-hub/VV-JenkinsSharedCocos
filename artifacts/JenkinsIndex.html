@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>构建产物下载</title>
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f6f7f9;
+            margin: 0;
+            padding: 12px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .platform {
+            margin-bottom: 24px;
+        }
+
+        .platform-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 16px 0 8px;
+            padding-bottom: 4px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .channel {
+            background: #fff;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .channel-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        /* ===== ENV ===== */
+        .env {
+            margin-bottom: 14px;
+        }
+
+        .env-title {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            color: #fff;
+        }
+
+        .env-prod {
+            background: #e53935;
+        }
+
+        .env-test {
+            background: #fb8c00;
+        }
+
+        .env-dev {
+            background: #43a047;
+        }
+
+        /* ===== ITEMS ===== */
+        .items {
+            margin-top: 6px;
+        }
+
+        .item {
+            background: #f1f3f5;
+            padding: 8px 10px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        .item-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* .item-info {
+            line-height: 1.4;
+        } */
+
+        .item-extra {
+            display: none;
+            font-size: 12px;
+            color: #555;
+            margin-top: 6px;
+            line-height: 1.5;
+        }
+
+        /* ===== BUTTON ===== */
+        .btn {
+            padding: 5px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            text-decoration: none;
+            color: #fff;
+            margin-left: 4px;
+            cursor: pointer;
+        }
+
+        .btn-run {
+            background: #1976d2;
+        }
+
+        .btn-download {
+            background: #2e7d32;
+        }
+
+        .btn-toggle {
+            background: #6a6a6a;
+        }
+
+        /* ===== PC 横排 ===== */
+        @media (min-width: 900px) {
+            .env {
+                display: inline-block;
+                vertical-align: top;
+                width: 32%;
+                margin-right: 1%;
+            }
+        }
+    </style>
+</head>
+<script>
+    fetch('./JenkinsManifest.json')
+        .then(res => res.json())
+        .then(data => render(data))
+        .catch(err => {
+            document.getElementById('app').innerHTML = '❌ manifest.json 加载失败';
+            console.error(err);
+        });
+
+    function render(data) {
+        const app = document.getElementById('app');
+        app.innerHTML = '';
+
+        Object.entries(data).forEach(([platform, channels]) => {
+            app.appendChild(renderPlatform(platform, channels));
+        });
+    }
+
+    function renderPlatform(platform, channels) {
+        const wrap = document.createElement('div');
+        wrap.className = 'platform';
+
+        wrap.innerHTML = `
+    <div class="platform-title">
+      ${platformIcon(platform)} ${platform.toUpperCase()}
+    </div>
+  `;
+
+        Object.entries(channels).forEach(([channel, envs]) => {
+            wrap.appendChild(renderChannel(platform, channel, envs));
+        });
+
+        return wrap;
+    }
+
+    function renderChannel(platform, channel, envs) {
+        const el = document.createElement('div');
+        el.className = 'channel';
+
+        el.innerHTML = `<div class="channel-title">${channel}</div>`;
+
+        Object.entries(envs).forEach(([env, items]) => {
+            el.appendChild(renderEnv(platform, env, items));
+        });
+
+        return el;
+    }
+
+    function renderEnv(platform, env, items) {
+        const envEl = document.createElement('div');
+        envEl.className = 'env';
+
+        envEl.innerHTML = `
+    <div class="env-title env-${env}">${env.toUpperCase()}</div>
+  `;
+
+        const list = document.createElement('div');
+        list.className = 'items';
+
+        items.forEach((item, idx) => {
+            list.appendChild(renderItem(platform, item, idx === 0));
+        });
+
+        envEl.appendChild(list);
+
+        if (items.length > 1) {
+            const btn = document.createElement('span');
+            btn.className = 'btn btn-toggle';
+            btn.innerText = '最近 10 个';
+            btn.onclick = () => toggleHistory(list, btn);
+            envEl.appendChild(btn);
+        }
+
+        return envEl;
+    }
+
+    function renderItem(platform, item, show) {
+        const el = document.createElement('div');
+        el.className = 'item';
+        el.style.display = show ? 'block' : 'none';
+
+        const isWeb = platform === 'web';
+
+        el.innerHTML = `
+    <div class="item-main">
+      <div>
+        ${isWeb
+                ? `<a class="btn btn-run" href="${item.url}" target="_blank">运行</a>`
+                : `<a class="btn btn-download" href="${item.apk}">APK</a>`
+            }
+        <span class="btn btn-toggle" onclick="toggleExtra(this)">详情</span>
+      </div>
+    </div>
+
+    <div class="item-extra">
+      作者:${item.author}<br/>
+      ${item.versionCode ? `版本号:${item.versionCode}<br/>` : ''}
+      ${item.versionName ? `版本名:${item.versionName}<br/>` : ''}
+      ${item.hotupdateVersion ? `热更新版本:${item.hotupdateVersion}<br/>` : ''}
+      Git:${item.commit}<br/>
+      包大小:${item.apkSize}<br/>
+      构建耗时:${item.duration}
+    </div>
+  `;
+
+        return el;
+    }
+
+    function toggleExtra(btn) {
+        const extra = btn.closest('.item').querySelector('.item-extra');
+        const show = extra.style.display === 'block';
+        extra.style.display = show ? 'none' : 'block';
+        btn.innerText = show ? '详情' : '收起';
+    }
+
+    function toggleHistory(list, btn) {
+        [...list.children].forEach((el, i) => {
+            if (i > 0) {
+                el.style.display = el.style.display === 'none' ? 'block' : 'none';
+            }
+        });
+        btn.innerText = btn.innerText.includes('最近') ? '收起历史' : '最近 10 个';
+    }
+
+    function platformIcon(p) {
+        return p === 'android' ? '🤖' :
+            p === 'web' ? '🌍' :
+                p === 'ios' ? '🍎' : '📦';
+    }
+</script>
+
+<body>
+
+    <h1>📦 构建产物列表</h1>
+
+</body>
+
+</html>
