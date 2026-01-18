@@ -16,7 +16,9 @@ pipeline {
     stage('cocos') {
       steps {
         script {
-          cocosPipeline()
+          def pipelineConfig = cocosPipeline(this)
+          pipelineConfig.delegate = this
+          pipelineConfig()
         }
       }
     }

@@ -1,5 +1,5 @@
 def call(ctx) {
-    pipeline {
+    return {
         agent { label 'cocos-windows-agent' }
 
         // 设置环境变量确保正确编码
