@@ -1,7 +1,5 @@
 def call(ctx) {
     echo "🎮 cocos pipeline start"
-    echo ctx.params.git_ref
-    echo "🎮 cocos pipeline start2222"
     // 设置环境变量确保正确编码
     // 编码相关环境变量
     ctx.env.LANG = 'zh_CN.UTF-8'
