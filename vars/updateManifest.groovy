@@ -1,6 +1,6 @@
 // 更新JenkinsManifest.json
 def call(ctx) {
-    def artifactsRoot = "${ctx.env.WORKSPACE}/jenkins-shared-cocos/artifacts"
+    def artifactsRoot = "${ctx.env.WORKSPACE}/../../artifacts"
     def manifestFile = "${artifactsRoot}/JenkinsManifest.json"
 
     if (!fileExists(manifestFile)) {
