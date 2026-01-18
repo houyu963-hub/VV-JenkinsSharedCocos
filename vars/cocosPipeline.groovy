@@ -12,7 +12,8 @@ def call(ctx) {
     ctx.env.BUILD_SCRIPT = 'jenkins-shared-cocos/bat/build.bat'
 
     echo "🎮 cocos pipeline start"
-
+    echo ctx.params.
+    echo ctx.params.git_ref 
     stage('拉代码') {
         checkout([
             $class: 'GitSCM',
