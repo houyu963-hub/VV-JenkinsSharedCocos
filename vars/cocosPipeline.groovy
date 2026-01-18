@@ -1,4 +1,8 @@
 def call(ctx) {
+    echo "🎮 cocos pipeline start"
+    echo ctx.params
+    echo ctx.params.git_ref
+    echo "🎮 cocos pipeline start2222"
     // 设置环境变量确保正确编码
     // 编码相关环境变量
     ctx.env.LANG = 'zh_CN.UTF-8'
@@ -10,10 +14,7 @@ def call(ctx) {
     // Cocos Creator 安装路径(按你机器实际改)
     ctx.env.CREATOR_PATH = 'D:\\software\\CocosEditors\\Creator\\3.8.1\\CocosCreator.exe'
     ctx.env.BUILD_SCRIPT = 'jenkins-shared-cocos/bat/build.bat'
-
-    echo "🎮 cocos pipeline start"
-    echo ctx.params.
-    echo ctx.params.git_ref 
+    
     stage('拉代码') {
         checkout([
             $class: 'GitSCM',
