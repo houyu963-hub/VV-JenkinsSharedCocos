@@ -38,7 +38,7 @@ def call(ctx) {
     stage('构建') {
         bat """
         call ${ctx.env.BUILD_SCRIPT} ^
-            ${ctx.env.platform} ^
+            ${ctx.params.platform} ^
             ${ctx.params.channel} ^
             ${ctx.params.env} ^
             ${ctx.params.mode} ^

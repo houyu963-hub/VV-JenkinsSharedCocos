@@ -5,6 +5,7 @@ pipeline {
 
   parameters {
     string(name: 'git_ref', defaultValue: 'main')
+    text(name: 'platform', defaultValue: 'android')
     choice(name: 'channel', choices: ['official','xiaomi','huawei'])
     choice(name: 'env', choices: ['dev', 'test', 'prod'])
     choice(name: 'mode', choices: ['release','debug'])
@@ -16,7 +17,6 @@ pipeline {
 
   stages {
     stage('cocos') {
-      env.platform = 'android'
       steps { cocosPipeline(this) }
     }
 
