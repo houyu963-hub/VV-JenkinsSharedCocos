@@ -6,7 +6,7 @@ pipeline {
   parameters {
     string(name: 'git_ref', defaultValue:'main')
     choice(name: 'channel', choices: ['official'])
-    choice(name: 'env', choices: ['dev', 'test', 'prod']])
+    choice(name: 'env', choices: ['dev', 'test', 'prod'])
     choice(name: 'mode', choices: ['release','debug'])
     booleanParam(name: 'clean', defaultValue: false)
   }
