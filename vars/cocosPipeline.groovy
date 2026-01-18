@@ -1,6 +1,5 @@
 def call(ctx) {
     echo "🎮 cocos pipeline start"
-    echo ctx.env.WORKSPACE
     // 设置环境变量确保正确编码
     // 编码相关环境变量
     ctx.env.LANG = 'zh_CN.UTF-8'
@@ -11,7 +10,7 @@ def call(ctx) {
     ctx.env.CHCP_GBK = 'chcp 936 >nul'    // GBK (Windows中文默认)
     // Cocos Creator 安装路径(按你机器实际改)
     ctx.env.CREATOR_PATH = 'D:/software/CocosEditors/Creator/3.8.1/CocosCreator.exe'
-    ctx.env.BUILD_SCRIPT = 'jenkins-shared-cocos/bat/build.bat'
+    ctx.env.BUILD_SCRIPT = 'tools/bat/build.bat'
     
     stage('拉代码') {
         checkout([
