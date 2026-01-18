@@ -1,5 +1,4 @@
 @echo off
-chcp 65001
 
 REM ===============================
 REM 参数说明
@@ -70,11 +69,12 @@ node jenkins-shared-cocos\src\org\cocos\js\gen_manifest.js ^
 if errorlevel 1 (
     exit /b 1
 )
-echo ✅ 生成 %bundleName% manifest 完成
+echo ✅ Generated %bundleName% manifest completed
 
 REM 删除旧文件
 if exist "%saveAartifactsDir%" (
     REM 先尝试删除其中的文件 防止被占用的情况
+    REM set "item=!item:"=!"
     attrib -R "%saveAartifactsDir%"*.* /S
     rmdir /s /q "%saveAartifactsDir%"
 ) 
@@ -83,11 +83,11 @@ mkdir "%saveAartifactsDir%"
 REM 移动生成的.manifest文件到保存目录
 move "%assetsRootPath%*.manifest" "%saveAartifactsDir%"
 if errorlevel 1 (
-    echo ❌ 错误: 移动产物 manifest 文件到保存目录失败
+    echo ❌ Error: Failed to move artifact manifest files to save directory
     exit /b 1
 )
 if "%apk%"=="true" (
-    echo ✅ 移动 manifest 文件到 %saveAartifactsDir% 完成
+    echo ✅ Move manifest files to %saveAartifactsDir% completed
     exit /b 0
 )
 
@@ -98,13 +98,13 @@ for %%i in (%resourceFolder%) do (
     set "item=%%i"
     set "item=!item:"=!"
     if exist "%dataPath%\!item!" (
-        echo 复制 !item! 到 "%saveAartifactsDir%"
+        echo Copying !item! to "%saveAartifactsDir%"
         copy /Y "%dataPath%\!item!" "%saveAartifactsDir%" >nul
     )
 )
 endlocal
 if errorlevel 1 (
-    echo ❌ 错误: 移动产物资源文件到保存目录失败1
+    echo ❌ Error: Failed to move artifact resource files to save directory 1
     exit /b 1
 )
 
@@ -112,9 +112,9 @@ exit /b 0
 
 :usage
 echo.
-echo 用法:
+echo Usage:
 echo   gen_hotupdate.bat ^<bundleName^> ^<version^> ^<hotupdateUrl^> ^<apk^> ^<saveAartifactsDir^>
 echo.
-echo 示例:
+echo Example:
 echo   build.bat hall 0.0.1 dev https://test.cdn.xxx.com/xiaomi true 0 D:\project\game\hotupdate\
 exit /b 1

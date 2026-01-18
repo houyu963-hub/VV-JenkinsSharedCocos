@@ -1,5 +1,4 @@
 @echo off
-chcp 65001
 setlocal enabledelayedexpansion
 
 REM ===============================
@@ -7,6 +6,11 @@ REM 参数说明
 REM build.bat android xiaomi dev debug CocosCreator.exe true true
 REM build.bat web official test debug CocosCreator.exe true true
 REM ===============================
+
+REM 当前目录
+echo -------------------------------------------------------------------
+set current_dir=%cd%
+echo %current_dir%
 
 if "%1"=="" goto usage
 if "%2"=="" goto usage
@@ -48,7 +52,7 @@ set channel_ts=assets\frame\config\ChannelConfig.ts
 set js_root=jenkins-shared-cocos\src\org\cocos\js\
 
 if not exist "%channel_config%" (
-  echo ❌ 错误: 未发现渠道配置:%channel_config%
+  echo ❌ Error: Channel config not found: %channel_config%
   exit /b 1
 )
 
@@ -57,10 +61,10 @@ REM 注入 ChannelConfig.ts
 REM ===============================
 node %js_root%gen_channel_config.js %channel_config% %channel_ts%
 if errorlevel 1 (
-  echo ❌ 错误: 注入 ChannelConfig.ts 失败
+  echo ❌ Error: Injection of ChannelConfig.ts failed
   exit /b 1
 )
-echo ===========  注入 ChannelConfig.ts 完成: %channel_config% ===========
+echo ===========  Injection of ChannelConfig.ts completed: %channel_config% ===========
 
 REM ===============================
 REM 安装项目依赖
@@ -69,31 +73,16 @@ if exist "package.json" (
   echo =========== Installing dependencies ===========
   call npm install --registry https://registry.npmmirror.com
   if errorlevel 1 (
-    echo ❌ 错误: npm 安装失败 errorlevel: %ERRORLEVEL%
+    echo ❌ Error: npm installation failed, errorlevel: %ERRORLEVEL%
     exit /b 1
   )
 ) else (
-  echo 未发现package.json, 跳过 npm install
-)
-
-REM ===============================
-REM 选择构建参数
-REM ===============================
-if "%platform%"=="android" (
-  set build_args=platform=android;configPath=build-config\android\buildConfig_android.json
-)
-
-if "%platform%"=="web" (
-  set build_args=platform=web-mobile;configPath=build-config\web\buildConfig_web-mobile.json
-)
-
-if "%platform%"=="ios" (
-  set build_args=platform=ios;configPath=build-config\ios\buildConfig_ios.json
+  echo package.json not found, skipping npm install
 )
 
 REM 生成 apk 流程（必须双构建）
 echo.
-echo =========== 构建 ===========
+echo =========== Build ===========
 echo   platform: %platform%
 echo   channel : %channel%
 echo   env     : %env%
@@ -101,7 +90,7 @@ echo   mode    : %mode%
 echo   creator : %creator%
 echo   apk     : %apk%
 echo   clean   : %clean%
-echo =========== 构建 ===========
+echo =========== Build ===========
 echo.
 
 REM 1. 第一次构建（生成最新资源）
@@ -109,13 +98,13 @@ REM 1. 第一次构建（生成最新资源）
 if errorlevel 36 (
   if "%platform%"=="web" (
     @REM web 构建成功就结束 不需要后续流程
-    echo 🎉 构建任务全部完成
+    echo 🎉 All build tasks completed
     exit /b 0
   ) else ( 
-    echo ✅ 第1次构建完成: code 36
+    echo ✅ 1st build completed: code 36
   )
 ) else (
-    echo ❌ 错误: 第1次构建失败
+    echo ❌ Error: 1st build failed
     exit /b 1
 )
 
@@ -127,12 +116,12 @@ if exist %last_version_path% (
     set last_version=%%i
   )
 ) else (
-  echo 未发现version.manifest,默认热更新版本: 0.0.0.0
+  echo version.manifest not found, default hot update version: 0.0.0.0
   set last_version=0.0.0.0
 )
 
 if "%last_version%"=="" (
-  echo ❌ 错误: 读取线上最新热更版本号失败
+  echo ❌ Error: Failed to read online hot update version number
   exit /b 1
 )
 
@@ -143,7 +132,7 @@ for /f %%i in ('node %js_root%read_value.js %channel_config% hotupdateUrl') do (
 )
 
 if "%hotupdate_url%"=="" (
-  echo ❌ 错误: 读取热更新地址失败
+  echo ❌ Error: Failed to read hot update address
   exit /b 1
 )
 
@@ -158,42 +147,42 @@ if "%apk%"=="false" (
 call jenkins-shared-cocos\bat\gen_hotupdate.bat hall %last_version% %hotupdate_url% %apk% %savea_artifacts_dir%
 
 if errorlevel 1 (
-  echo ❌ 错误: 生成热更新 manifest 失败
+  echo ❌ Error: Failed to generate hot update manifest
   exit /b 1
 )
 
 REM 只是热更新的文件 就不需要第二次构建
 if "%apk%"=="false" (
-  echo ✅ 生成 %bundleName% 热更新文件完成
+  echo ✅ Generation of %bundleName% hot update files completed
   exit /b 0
 )
 
 REM 5. 第二次构建（正式 APK）
 %creator% --project %cd% --build "%build_args%;mode=%mode%"
 if errorlevel 36 (
-  echo ✅ 第2次构建完成: code 36
+  echo ✅ 2nd build completed: code 36
 ) else (
-    echo ❌ 错误: 第2次构建失败
+    echo ❌ Error: 2nd build failed
     exit /b 1
 )
 
-echo ========== 注入代码到 main.js ==========
+echo ========== Inject code to main.js ==========
 node %js_root%gen_main.js
 if errorlevel 1 (
-    echo ❌ 错误: 注入 main.js 失败
+    echo ❌ Error: Injection of main.js failed
     exit /b 1
 )
-echo ✅ main.js 代码注入完成
+echo ✅ main.js code injection completed
 
-echo 🎉 构建任务全部完成
+echo 🎉 All build tasks completed
 exit /b 0
 
 :usage
 echo.
-echo 用法:
+echo Usage:
 echo   build.bat ^<platform^> ^<channel^> ^<env^> ^<mode^> ^<creator^> ^<apk^> ^<clean^>
 echo.
-echo 示例:
+echo Example:
 echo   build.bat android xiaomi dev debug CocosCreator.exe true true
 echo   build.bat android huawei prod debug CocosCreator.exe true true
 echo   build.bat web official test debug CocosCreator.exe true true
