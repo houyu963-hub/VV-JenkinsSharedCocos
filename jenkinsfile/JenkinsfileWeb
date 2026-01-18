@@ -4,8 +4,8 @@ pipeline {
   agent { label 'cocos-windows-agent' }
 
   parameters {
+    choice(name: 'platform', choices: ['web'])
     string(name: 'git_ref', defaultValue: 'main')
-    text(name: 'platform', defaultValue: 'web')
     choice(name: 'channel', choices: ['official'])
     choice(name: 'env', choices: ['dev', 'test', 'prod'])
     choice(name: 'mode', choices: ['release','debug'])

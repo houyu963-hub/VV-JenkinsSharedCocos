@@ -9,7 +9,7 @@ def call(ctx) {
     ctx.env.CHCP_CMD = 'chcp 65001 >nul'  // UTF-8
     ctx.env.CHCP_GBK = 'chcp 936 >nul'    // GBK (Windows中文默认)
     // Cocos Creator 安装路径(按你机器实际改)
-    ctx.env.CREATOR_PATH = 'D:\\software\\CocosEditors\\Creator\\3.8.1\\CocosCreator.exe'
+    ctx.env.CREATOR_PATH = 'D:/software/CocosEditors/Creator/3.8.1/CocosCreator.exe'
     ctx.env.BUILD_SCRIPT = 'jenkins-shared-cocos/bat/build.bat'
     
     stage('拉代码') {
