@@ -97,7 +97,7 @@ REM 1. 第一次构建（生成最新资源）
 %creator% --project %cd% --build "%build_args%;mode=%mode%"
 if errorlevel 36 (
   if "%platform%"=="web" (
-    @REM web 构建成功就结束 不需要后续流程
+    REM web 构建成功就结束 不需要后续流程
     echo 🎉 All build tasks completed
     exit /b 0
   ) else ( 
