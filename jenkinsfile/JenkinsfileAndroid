@@ -1,6 +1,8 @@
 @Library('jenkins-shared-cocos') _
 
 pipeline {
+  agent { label 'cocos-windows-agent' }
+
   parameters {
     string(name: 'git_ref', defaultValue:'main')
     choice(name: 'channel', choices: ['official','xiaomi'])
@@ -14,13 +16,7 @@ pipeline {
 
   stages {
     stage('cocos') {
-      steps {
-        script {
-          def pipelineConfig = cocosPipeline(this)
-          pipelineConfig.delegate = this
-          pipelineConfig()
-        }
-      }
+      steps { cocosPipeline(this) }
     }
 
     stage('android') {
