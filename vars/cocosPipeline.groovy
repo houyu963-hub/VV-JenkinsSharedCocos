@@ -10,13 +10,13 @@ def call(ctx) {
     // Cocos Creator 安装路径(按你机器实际改)
     ctx.env.CREATOR_PATH = 'D:\\software\\CocosEditors\\Creator\\3.8.1\\CocosCreator.exe'
     ctx.env.BUILD_SCRIPT = 'jenkins-shared-cocos/bat/build.bat'
-    
+
     echo "🎮 cocos pipeline start"
 
     stage('拉代码') {
         checkout([
             $class: 'GitSCM',
-            branches: [[name: params.git_ref]],
+            branches: [[name: ctx.params.git_ref]],
             userRemoteConfigs: [[url: 'https://github.com/houyu963-hub/VV-CocosGameClient.git']],
             extensions: [
             // 启用子模块递归拉取
