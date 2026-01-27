@@ -1,7 +1,7 @@
 // 生成 Android apk
 def call(ctx) {
     def (versionName, versionCode) =
-        org.cocos.AndroidUtils.resolveVersion(this, ctx.params, ctx.env.WORKSPACE)
+        org.cocos.utils.AndroidUtils.resolveVersion(this, ctx.params, ctx.env.WORKSPACE)
 
     def versionName = ctx.params.versionName ?: versionName
     def versionCode = ctx.params.versionCode ?: versionCode

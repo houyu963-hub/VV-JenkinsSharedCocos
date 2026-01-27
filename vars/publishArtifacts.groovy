@@ -16,5 +16,5 @@ def call(ctx) {
     }
 
     // 清理旧目录 只保留 最近10 个
-    org.cocos.FileUtils.cleanupOldDirs(this, root, 10)
+    org.cocos.utils.FileUtils.cleanupOldDirs(this, root, 10)
 }

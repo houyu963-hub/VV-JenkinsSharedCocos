@@ -9,7 +9,7 @@ def call(ctx) {
 
     def manifest = readJSON(file: manifestFile)
 
-    def commit = org.cocos.GitUtils.shortCommit(this)
+    def commit = org.cocos.utils.GitUtils.shortCommit(this)
     def time = new Date().format("yyyy-MM-dd HH:mm:ss")
 
     def artifact = [
