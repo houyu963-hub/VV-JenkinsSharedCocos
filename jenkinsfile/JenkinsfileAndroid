@@ -2,6 +2,9 @@
 
 pipeline {
   agent { label 'cocos-windows-agent' }
+  environment {
+    platform = 'android'
+  }
 
   parameters {
     choice(name: 'platform', choices: ['android'])

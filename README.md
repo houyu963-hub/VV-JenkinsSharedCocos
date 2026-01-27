@@ -1,2 +1,0 @@
-# VV-JenkinsSharedCocos
-Shared Library

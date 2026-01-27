@@ -1,7 +1,7 @@
 // 更新JenkinsManifest.json
 def call(ctx) {
     def artifactsRoot = "${ctx.env.WORKSPACE}\\..\\..\\artifacts"
-    def manifestFile = "${artifactsRoot}/JenkinsManifest.json"
+    def manifestFile = "${artifactsRoot}\\JenkinsManifest.json"
 
     if (!fileExists(manifestFile)) {
         writeFile file: manifestFile, text: "{}"

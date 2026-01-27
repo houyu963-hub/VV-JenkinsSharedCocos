@@ -1,8 +1,8 @@
-// copy 产物到发布目录
+// copy 产物到 artifacts 目录
 def call(ctx) {
     def timeDir = new Date().format("yyyyMMdd_HHmmss")
     def root = "${ctx.env.WORKSPACE}\\..\\..\\artifacts\\${ctx.params.platform}\\${ctx.params.channel}\\${ctx.params.env}"
-    def target = "${root}/${timeDir}"
+    def target = "${root}\\${timeDir}"
 
     bat "mkdir \"${target}\" 2>nul"
 

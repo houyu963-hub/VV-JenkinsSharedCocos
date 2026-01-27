@@ -2,9 +2,11 @@
 
 pipeline {
   agent { label 'cocos-windows-agent' }
-
+  environment {
+    platform = 'web'
+  }
+  
   parameters {
-    choice(name: 'platform', choices: ['web'])
     string(name: 'git_ref', defaultValue: 'main')
     choice(name: 'channel', choices: ['official'])
     choice(name: 'env', choices: ['dev', 'test', 'prod'])
