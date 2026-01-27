@@ -3,7 +3,7 @@
 pipeline {
   agent { label 'cocos-windows-agent' }
   environment {
-    platform = 'android'
+    PLATFORM = 'android'
   }
 
   parameters {
