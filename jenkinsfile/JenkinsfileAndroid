@@ -7,7 +7,6 @@ pipeline {
   }
 
   parameters {
-    choice(name: 'platform', choices: ['android'])
     string(name: 'git_ref', defaultValue: 'main')
     choice(name: 'channel', choices: ['official','xiaomi','huawei'])
     choice(name: 'env', choices: ['dev', 'test', 'prod'])

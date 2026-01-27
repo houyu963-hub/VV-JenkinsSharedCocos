@@ -19,18 +19,18 @@ def call(ctx) {
         duration: currentBuild.durationString
     ]
 
-    manifest[ctx.params.platform] =
-        manifest.get(ctx.params.platform, [:])
+    manifest[ctx.env.PLATFORM] =
+        manifest.get(ctx.env.PLATFORM, [:])
 
-    manifest[ctx.params.platform][ctx.params.channel] =
-        manifest[ctx.params.platform][ctx.params.channel] ?: [:]
+    manifest[ctx.env.PLATFORM][ctx.params.channel] =
+        manifest[ctx.env.PLATFORM][ctx.params.channel] ?: [:]
 
-    manifest[ctx.params.platform][ctx.params.channel][ctx.params.env] =
-        (manifest[ctx.params.platform][ctx.params.channel][ctx.params.env] ?: [])
+    manifest[ctx.env.PLATFORM][ctx.params.channel][ctx.params.env] =
+        (manifest[ctx.env.PLATFORM][ctx.params.channel][ctx.params.env] ?: [])
 
-    manifest[ctx.params.platform][ctx.params.channel][ctx.params.env].add(0, artifact)
-    manifest[ctx.params.platform][ctx.params.channel][ctx.params.env] =
-        manifest[ctx.params.platform][ctx.params.channel][ctx.params.env].take(10)
+    manifest[ctx.env.PLATFORM][ctx.params.channel][ctx.params.env].add(0, artifact)
+    manifest[ctx.env.PLATFORM][ctx.params.channel][ctx.params.env] =
+        manifest[ctx.env.PLATFORM][ctx.params.channel][ctx.params.env].take(10)
 
     writeJSON file: manifestFile, json: manifest, pretty: 2
 }
