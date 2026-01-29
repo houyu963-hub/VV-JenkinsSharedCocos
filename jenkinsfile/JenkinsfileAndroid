@@ -17,7 +17,7 @@ pipeline {
     booleanParam(name: 'clean', defaultValue: false)
   }
 
-  // stages {
+  stages {
   //   stage('Start') {
   //     steps { cocosPipeline(this) }
   //   }
