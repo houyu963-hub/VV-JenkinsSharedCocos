@@ -1,4 +1,4 @@
-package org.cocos
+package org.cocos.utils
 
 // Android 工具类
 class AndroidUtils implements Serializable {
