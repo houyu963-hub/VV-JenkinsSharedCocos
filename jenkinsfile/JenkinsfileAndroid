@@ -18,19 +18,19 @@ pipeline {
   }
 
   stages {
-  //   stage('Start') {
-  //     steps { cocosPipeline(this) }
-  //   }
+    stage('Start') {
+      steps {  }
+    }
 
-  //   stage('Android') {
-  //     steps { androidBuild(this) }
-  //   }
+    // stage('Android') {
+    //   steps { androidBuild(this) }
+    // }
 
-  //   stage('Publish') {
-  //     steps {
-  //       publishArtifacts(this)
-  //       updateManifest(this)
-  //     }
-  //   }
+    // stage('Publish') {
+    //   steps {
+    //     publishArtifacts(this)
+    //     updateManifest(this)
+    //   }
+    // }
   }
 }
