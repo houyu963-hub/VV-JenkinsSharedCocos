@@ -17,20 +17,20 @@ pipeline {
     booleanParam(name: 'clean', defaultValue: false)
   }
 
-  stages {
-    stage('Start') {
-      steps { cocosPipeline(this) }
-    }
+  // stages {
+  //   stage('Start') {
+  //     steps { cocosPipeline(this) }
+  //   }
 
-    stage('Android') {
-      steps { androidBuild(this) }
-    }
+  //   stage('Android') {
+  //     steps { androidBuild(this) }
+  //   }
 
-    stage('Publish') {
-      steps {
-        publishArtifacts(this)
-        updateManifest(this)
-      }
-    }
-  }
+  //   stage('Publish') {
+  //     steps {
+  //       publishArtifacts(this)
+  //       updateManifest(this)
+  //     }
+  //   }
+  // }
 }
