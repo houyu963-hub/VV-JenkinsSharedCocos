@@ -11,8 +11,8 @@ pipeline {
     choice(name: 'channel', choices: ['official','xiaomi','huawei'])
     choice(name: 'env', choices: ['dev', 'test', 'prod'])
     choice(name: 'mode', choices: ['release','debug'])
-    choice(name: 'version_name', defaultValue: '')
-    choice(name: 'version_code', defaultValue: '')
+    choice(name: 'version_name')
+    choice(name: 'version_code')
     booleanParam(name: 'apk', defaultValue: false)
     booleanParam(name: 'clean', defaultValue: false)
   }
@@ -22,15 +22,15 @@ pipeline {
       steps { cocosPipeline(this) }
     }
 
-    // stage('Android') {
-    //   steps { androidBuild(this) }
-    // }
+    stage('Android') {
+      steps { androidBuild(this) }
+    }
 
-    // stage('Publish') {
-    //   steps {
-    //     publishArtifacts(this)
-    //     updateManifest(this)
-    //   }
-    // }
+    stage('Publish') {
+      steps {
+        publishArtifacts(this)
+        updateManifest(this)
+      }
+    }
   }
 }

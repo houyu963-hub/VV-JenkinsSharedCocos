@@ -35,16 +35,16 @@ def call(ctx) {
         ])
     }
 
-    // stage('Build') {
-    //     bat """
-    //     call ${ctx.env.BUILD_SCRIPT} ^
-    //         ${ctx.env.PLATFORM} ^
-    //         ${ctx.params.channel} ^
-    //         ${ctx.params.env} ^
-    //         ${ctx.params.mode} ^
-    //         ${ctx.env.CREATOR_PATH} ^
-    //         ${ctx.params.apk} ^
-    //         ${ctx.params.clean}
-    //     """
-    // }
+    stage('Build') {
+        bat """
+        call ${ctx.env.BUILD_SCRIPT} ^
+            ${ctx.env.PLATFORM} ^
+            ${ctx.params.channel} ^
+            ${ctx.params.env} ^
+            ${ctx.params.mode} ^
+            ${ctx.env.CREATOR_PATH} ^
+            ${ctx.params.apk} ^
+            ${ctx.params.clean}
+        """
+    }
 }
