@@ -9,7 +9,7 @@ def call(ctx) {
     ctx.env.android_version_name = android_version_name
     ctx.env.android_version_code = android_version_code
 
-    dir('build/android') {
+    dir('build/android/proj') {
         bat """
         gradlew assemble${ctx.params.channel.capitalize()}${ctx.params.mode.capitalize()} \
         -PversionName=${versionName} \
