@@ -12,8 +12,8 @@ pipeline {
     choice(name: 'env', choices: ['dev', 'test', 'prod'])
     choice(name: 'mode', choices: ['release','debug'])
     choice(name: 'bundle', choices: ['hall','game'])
-    string(name: 'version_name', defaultValue: '')
-    string(name: 'version_code', defaultValue: '')
+    // string(name: 'version_name', defaultValue: 'Fixed')
+    // string(name: 'version_code', defaultValue: 'Add 1 each time.')
     booleanParam(name: 'apk', defaultValue: false)
     booleanParam(name: 'clean', defaultValue: false)
   }
