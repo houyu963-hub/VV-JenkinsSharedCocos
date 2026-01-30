@@ -12,19 +12,19 @@ class AndroidUtils implements Serializable {
 
         if (script.fileExists(manifestFile)) {
             def m = script.readJSON(file: manifestFile)
-            def list = m?.android?."${params.CHANNEL}"?."${params.ENV}"
+            def list = m?.android?."${params.channel}"?."${params.env}"
             if (list) {
                 lastName = list[0].versionName
                 lastCode = list[0].versionCode as int
             }
         }
 
-        def name = params.VERSION_NAME?.trim()
-            ? params.VERSION_NAME
+        def name = params.version_name?.trim()
+            ? params.version_name
             : lastName
 
-        def code = params.VERSION_CODE?.trim()
-            ? params.VERSION_CODE.toInteger()
+        def code = params.version_code?.trim()
+            ? params.version_code.toInteger()
             : lastCode + 1
 
         return [name, code]
