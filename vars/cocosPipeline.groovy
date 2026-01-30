@@ -44,7 +44,8 @@ def call(ctx) {
             ${ctx.params.mode} ^
             ${ctx.env.CREATOR_PATH} ^
             ${ctx.params.apk} ^
-            ${ctx.params.clean}
+            ${ctx.params.bundleName} ^
+            ${ctx.params.apk}
         """
     }
 }

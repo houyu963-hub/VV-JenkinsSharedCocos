@@ -11,10 +11,11 @@ pipeline {
     choice(name: 'channel', choices: ['official','xiaomi','huawei'])
     choice(name: 'env', choices: ['dev', 'test', 'prod'])
     choice(name: 'mode', choices: ['release','debug'])
+    choice(name: 'bundle', choices: ['hall','game'])
+    booleanParam(name: 'clean', defaultValue: false)
+    booleanParam(name: 'apk', defaultValue: false)
     string(name: 'version_name', defaultValue: '')
     string(name: 'version_code', defaultValue: '')
-    booleanParam(name: 'apk', defaultValue: false)
-    booleanParam(name: 'clean', defaultValue: false)
   }
 
   stages {
