@@ -24,6 +24,9 @@ pipeline {
     }
 
     stage('Android') {
+      when {
+        expression { return params.apk == true }
+      }
       steps { androidBuild(this) }
     }
 

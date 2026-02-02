@@ -8,7 +8,8 @@ def call(ctx) {
 
     if (ctx.env.PLATFORM == 'android') {
         def apk = "Game_${ctx.params.channel}_${ctx.params.env}_v${ctx.env.android_version_code}.apk"
-        bat "copy ${ctx.env.WORKSPACE}\\build\\android\\**\\*.apk \"${target}\\${apk}\""
+        // 使用 xcopy 替代 copy，并指定 /S 参数递归复制
+        bat "xcopy /Y /S \"${ctx.env.WORKSPACE}\\build\\android\\*.apk\" \"${target}\\${apk}\""
     }
 
     if (ctx.env.PLATFORM == 'web') {
