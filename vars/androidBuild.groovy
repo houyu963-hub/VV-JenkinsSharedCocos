@@ -3,11 +3,8 @@ def call(ctx) {
     def (versionName, versionCode) =
         org.cocos.utils.AndroidUtils.resolveVersion(this, ctx.params, ctx.env.WORKSPACE)
 
-    def android_version_name = ctx.params.versionName ?: versionName
-    def android_version_code = ctx.params.versionCode ?: versionCode
-
-    ctx.env.android_version_name = android_version_name
-    ctx.env.android_version_code = android_version_code
+    versionName =  ctx.params.versionName ?: versionName
+    versionCode = ctx.params.versionCode ?: versionCode
 
     dir('build/android/proj') {
         bat """
