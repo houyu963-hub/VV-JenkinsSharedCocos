@@ -7,10 +7,21 @@ def call(ctx) {
     bat "mkdir \"${target}\" 2>nul"
 
     if (ctx.env.PLATFORM == 'android') {
-        def apk = "Game_${ctx.params.channel}_${ctx.params.env}_v${ctx.env.android_version_code}.apk"
-        // 使用 xcopy 替代 copy，并指定 /S 参数递归复制
-        bat "xcopy /Y /S \"${ctx.env.WORKSPACE}\\build\\android\\*.apk\" \"${target}\\${apk}\""
-    }
+        def apk = "Game_${ctx.params.channel}_${ctx.params.mode}_v${ctx.env.android_version_name}.apk"
+        def apk_full_name = "Game_${ctx.params.channel}_${ctx.params.env}_${ctx.params.mode}_v${ctx.env.android_version_name}.apk"
+        bat """
+            powershell -Command "
+            \$apkFile = Get-ChildItem -Path '${ctx.env.WORKSPACE}\\build\\android\\proj\\build' -Filter '${apk}' -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+            if (\$apkFile) {
+                Copy-Item \$apkFile.FullName -Destination '${target}\\${apk_full_name}' -Force
+                Write-Host 'Successfully copied APK: ' \$apkFile.Name
+            } else {
+                Write-Warning 'APK file not found: ${apk}'
+                exit 1
+            }
+            "
+        """
+}
 
     if (ctx.env.PLATFORM == 'web') {
         bat "xcopy /E /I /Y build\\web-mobile \"${target}\""
