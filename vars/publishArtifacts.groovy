@@ -1,12 +1,15 @@
 // copy 产物到 artifacts 目录
 def call(ctx) {
+    if (ctx.env.PLATFORM == 'android' && !ctx.params.apk) { // is hotupdate
+        return
+    }
     def timeDir = new Date().format("yyyyMMdd_HHmmss")
     def root = "${ctx.env.WORKSPACE}\\..\\..\\artifacts\\${ctx.env.PLATFORM}\\${ctx.params.channel}\\${ctx.params.env}"
     def target = "${root}\\${timeDir}"
 
     bat "mkdir \"${target}\" 2>nul"
 
-    if (ctx.env.PLATFORM == 'android' && ctx.params.apk) {
+    if (ctx.env.PLATFORM == 'android') {
         def apk = "Game_${ctx.params.channel}_${ctx.params.mode}_v${ctx.env.android_version_name}.apk"
         def apk_full_name = "Game_${ctx.params.channel}_${ctx.params.env}_${ctx.params.mode}_v${ctx.env.android_version_name}.apk"
         bat """
