@@ -6,7 +6,7 @@ def call(ctx) {
 
     bat "mkdir \"${target}\" 2>nul"
 
-    if (ctx.env.PLATFORM == 'android') {
+    if (ctx.env.PLATFORM == 'android' && ctx.params.apk) {
         def apk = "Game_${ctx.params.channel}_${ctx.params.mode}_v${ctx.env.android_version_name}.apk"
         def apk_full_name = "Game_${ctx.params.channel}_${ctx.params.env}_${ctx.params.mode}_v${ctx.env.android_version_name}.apk"
         bat """
