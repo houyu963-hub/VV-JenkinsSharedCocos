@@ -1,6 +1,6 @@
 import org.cocos.ci.*
 
-def call(Map ctx) {
+def call(ctx) {
 
     def platform = ctx.env.PLATFORM
     def channel  = ctx.params.channel
@@ -22,12 +22,13 @@ def call(Map ctx) {
     def author   = ctx.env.BUILD_USER ?: "jenkins"
     def duration = currentBuild.durationString.replace(" and counting", "")
 
+    echo "JenkinsManifest.json 更新中."
     def manifest = FileUtils.readJson(manifestFile)
 
     def artifact = [:]
 
     if (platform == "android") {
-
+        echo "JenkinsManifest.json 更新中.."
         def (name, path, size) = ApkUtils.findLatestApk(this, ctx.params, ctx.env.WORKSPACE)
 
         artifact = [
@@ -79,7 +80,7 @@ def call(Map ctx) {
     manifest[platform][channel][envName].add(0, artifact)
     manifest[platform][channel][envName] =
         manifest[platform][channel][envName].take(10)
-
+    echo "JenkinsManifest.json 更新中..."
     FileUtils.writeJson(manifestFile, manifest)
 
     echo "✅ JenkinsManifest.json 已更新"
