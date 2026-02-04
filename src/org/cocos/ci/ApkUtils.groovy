@@ -32,21 +32,18 @@ class ApkUtils implements Serializable {
     }
 
     // 上个apk 物理信息
-    @NonCPS
     static def findLatestApk(script, ctx) {
         def apkDir = "${ctx.env.WORKSPACE}\\..\\..\\artifacts\\${ctx.env.PLATFORM}\\${ctx.params.channel}\\${ctx.params.envName}"
-        
-        // 使用 bat 命令查找最新 APK
-        def result = script.bat(
+        def rawOutput = bat(
             script: """
                 powershell -Command "
-                \$latest = Get-ChildItem -Path '${apkDir}' -Filter '*.apk' -Recurse -ErrorAction SilentlyContinue | 
-                        Sort-Object LastWriteTime -Descending | 
+                \$latest = Get-ChildItem -Path '${apkDir}' -Filter '*.apk' -Recurse -ErrorAction SilentlyContinue |
+                        Sort-Object LastWriteTime -Descending |
                         Select-Object -First 1;
                 if (\$latest) {
-                    Write-Output ('NAME:' + \$latest.Name);
-                    Write-Output ('PATH:' + \$latest.FullName);
-                    Write-Output ('SIZE:' + [Math]::Round(\$latest.Length / 1MB, 2) + 'MB');
+                    Write-Output ('NAME=' + \$latest.Name);
+                    Write-Output ('PATH=' + \$latest.FullName);
+                    Write-Output ('SIZE=' + [Math]::Round(\$latest.Length / 1MB, 2));
                 } else {
                     Write-Output 'NOT_FOUND'
                 }
@@ -54,18 +51,25 @@ class ApkUtils implements Serializable {
             """,
             returnStdout: true
         ).trim()
-        
-        if (result == 'NOT_FOUND') {
-            return [name: "", path: "", size: "0MB"]
+
+        def apkInfo = parseApkInfo(rawOutput)
+        return apkInfo
+    }
+
+    @NonCPS
+    static Map parseApkInfo(String text) {
+        if (text == 'NOT_FOUND') {
+            return [name: '', path: '', size: '0MB']
         }
-        
-        // 解析输出
-        def lines = result.readLines()
-        def name = lines.find { it.startsWith('NAME:') }?.substring(5) ?: ""
-        def path = lines.find { it.startsWith('PATH:') }?.substring(5) ?: ""
-        def size = lines.find { it.startsWith('SIZE:') }?.substring(5) ?: "0MB"
-        
-        return [name: name, path: path, size: size]
+
+        def map = [:]
+        text.readLines().each { line ->
+            if (line.contains('=')) {
+                def (k, v) = line.split('=', 2)
+                map[k.toLowerCase()] = v
+            }
+        }
+        return map
     }
 
     // 根据 versionCode 计算四位版本号
