@@ -1,7 +1,6 @@
 package org.cocos.ci
 
 // apk 工具类
-@NonCPS
 class ApkUtils implements Serializable {
 
     // 上个apk 版本信息
