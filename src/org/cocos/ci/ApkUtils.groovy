@@ -38,18 +38,12 @@ class ApkUtils implements Serializable {
         // 使用 bat 命令查找最新 APK
         def result = script.bat(
             script:
-                'powershell -NoProfile -Command "& {' +
-                '  $latest = Get-ChildItem \'' + apkDir + '\' -Filter \'*.apk\' -Recurse -ErrorAction SilentlyContinue | ' +
-                '           Sort-Object LastWriteTime -Descending | ' +
-                '           Select-Object -First 1; ' +
-                '  if ($latest) { ' +
-                '    Write-Output (\'NAME:\' + $latest.Name); ' +
-                '    Write-Output (\'PATH:\' + $latest.FullName); ' +
-                '    Write-Output (\'SIZE:\' + [Math]::Round($latest.Length / 1MB, 2) + \'MB\'); ' +
-                '  } else { ' +
-                '    Write-Output \'NOT_FOUND\' ' +
-                '  } ' +
-                '}"',
+               'powershell -NoProfile -Command "& {' +
+                '  Get-ChildItem \'' + baseDir + '\' -Directory | ' +
+                '  Sort-Object Name -Descending | ' +
+                '  Select-Object -Skip ' + keep + ' | ' +
+                '  ForEach-Object { Remove-Item $_.FullName -Recurse -Force }' +
+                '}"'
             returnStdout: true
         ).trim()
         
