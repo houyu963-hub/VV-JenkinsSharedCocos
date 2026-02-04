@@ -34,34 +34,30 @@ def call(ctx) {
                     Sort-Object LastWriteTime -Descending | 
                     Select-Object -First 1;
             if (\$latest) {
-                Write-Output ('NAME:' + \$latest.Name);
-                Write-Output ('PATH:' + \$latest.FullName);
-                Write-Output ('SIZE:' + [Math]::Round(\$latest.Length / 1MB, 2) + 'MB');
+               
             } else {
-                Write-Output ('NAME:' + '');
-                Write-Output ('PATH:' + '');
-                Write-Output ('SIZE:' + '0MB');
+               
             }
             "
         """
         // 解析输出
-        def lines = apkInfo.readLines()
-        def name = lines.find { it.startsWith('NAME:') }?.substring(5) ?: ""
-        def path = lines.find { it.startsWith('PATH:') }?.substring(5) ?: ""
-        def size = lines.find { it.startsWith('SIZE:') }?.substring(5) ?: "0MB"
+        // def lines = apkInfo.readLines()
+        // def name = lines.find { it.startsWith('NAME:') }?.substring(5) ?: ""
+        // def path = lines.find { it.startsWith('PATH:') }?.substring(5) ?: ""
+        // def size = lines.find { it.startsWith('SIZE:') }?.substring(5) ?: "0MB"
         
-        echo "APK name: ${name}"
-        echo "APK path: ${path}"
-        echo "APK size: ${size}"
+        // echo "APK name: ${name}"
+        // echo "APK path: ${path}"
+        // echo "APK size: ${size}"
 
         echo "JenkinsManifest.json 更新中2.."
 
         artifact = [
             versionCode : ctx.env.ANDROID_VERSION_CODE as int,
             versionName : ctx.env.ANDROID_VERSION_NAME,
-            name        : apkInfo.name,
-            apk         : apkInfo.path,
-            apkSize     : apkInfo.size,
+            name        : name,
+            apk         : path,
+            apkSize     : size,
             time        : time,
             author      : author,
             commit      : commit,
