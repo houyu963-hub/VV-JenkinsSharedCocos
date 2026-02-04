@@ -19,7 +19,7 @@ def call(Map ctx) {
 
     def commit   = GitUtils.shortCommit(this)
     def time     = new Date().format("yyyy-MM-dd HH:mm:ss")
-    def author   = env.BUILD_USER ?: "jenkins"
+    def author   = ctx.env.BUILD_USER ?: "jenkins"
     def duration = currentBuild.durationString.replace(" and counting", "")
 
     def manifest = FileUtils.readJson(manifestFile)
