@@ -32,11 +32,11 @@ class ApkUtils implements Serializable {
     }
 
     // 获取最新 apk 文件信息
-    @NonCPS
     static def findLatestApk(script, ctx) {
         def apkDir = "${ctx.env.WORKSPACE}\\..\\..\\artifacts\\${ctx.env.PLATFORM}\\${ctx.params.channel}\\${ctx.params.env}"
         
         // 使用简单的 bat 命令获取信息
+        @NonCPS
         def name = script.bat(
             script: "dir \"${apkDir}\" /s /b *.apk | sort /r | head -n 1",
             returnStdout: true
