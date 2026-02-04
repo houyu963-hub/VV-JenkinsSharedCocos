@@ -39,7 +39,7 @@ class ApkUtils implements Serializable {
         def result = script.bat(
             script:
                'powershell -NoProfile -Command "& {' +
-                '  Get-ChildItem \'' + baseDir + '\' -Directory | ' +
+                '  Get-ChildItem \'' + apkDir + '\' -Directory | ' +
                 '  Sort-Object Name -Descending | ' +
                 '  Select-Object -Skip ' + keep + ' | ' +
                 '  ForEach-Object { Remove-Item $_.FullName -Recurse -Force }' +
