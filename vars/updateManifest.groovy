@@ -26,8 +26,8 @@ def call(ctx) {
 
     if (platform == "android") {
         echo "JenkinsManifest.json 更新中.."
-        def (name, path, size) = ApkUtils.findLatestApk(this, ctx.params, ctx.env.WORKSPACE)
-
+        def (name, path, size) = ApkUtils.findLatestApk(this, ctx)
+        echo "JenkinsManifest.json 更新中2.."
         artifact = [
             versionCode : ctx.env.ANDROID_VERSION_CODE as int,
             versionName : ctx.env.ANDROID_VERSION_NAME,
