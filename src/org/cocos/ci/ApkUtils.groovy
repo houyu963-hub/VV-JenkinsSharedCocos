@@ -32,9 +32,9 @@ class ApkUtils implements Serializable {
     }
 
     // 上个apk 物理信息
-    static Map findLatestApk(script, workspace, platform, channel, env) {
+    static String findLatestApk(script, workspace, platform, channel, env) {
         def apkDir = "${workspace}\\..\\..\\artifacts\\${platform}\\${channel}\\${env}"
-        def output = script.bat(
+        return script.bat(
             script: """
                 powershell -Command "
                 \$latest = Get-ChildItem -Path '${apkDir}' -Filter '*.apk' -Recurse -ErrorAction SilentlyContinue |
@@ -51,24 +51,6 @@ class ApkUtils implements Serializable {
             """,
             returnStdout: true
         ).trim()
-
-        return parseApkInfo(output)
-    }
-
-    @NonCPS
-    static Map parseApkInfo(String text) {
-        if (text == 'NOT_FOUND') {
-            return [name: '', path: '', size: '0MB']
-        }
-
-        def map = [:]
-        text.readLines().each { line ->
-            if (line.contains('=')) {
-                def (k, v) = line.split('=', 2)
-                map[k.toLowerCase()] = v
-            }
-        }
-        return map
     }
 
     // 根据 versionCode 计算四位版本号
