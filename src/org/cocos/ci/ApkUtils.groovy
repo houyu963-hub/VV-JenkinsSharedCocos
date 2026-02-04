@@ -32,14 +32,14 @@ class ApkUtils implements Serializable {
     }
 
     // 上个apk 物理信息
-    static def findLatestApk(script, workspace, platform, channel, envName) {
-        def buildDir = "${workspace}\\..\\..\\artifacts\\${platform}\\${channel}\\${envName}"
+    static def findLatestApk(script, params, workspace) {
+        def apkDir = "${workspace}\\..\\..\\artifacts\\${params.platform}\\${params.channel}\\${params.envName}"
         
         // 使用 bat 命令查找最新 APK
         def result = script.bat(
             script: """
                 powershell -Command "
-                \$latest = Get-ChildItem -Path '${buildDir}' -Filter '*.apk' -Recurse -ErrorAction SilentlyContinue | 
+                \$latest = Get-ChildItem -Path '${apkDir}' -Filter '*.apk' -Recurse -ErrorAction SilentlyContinue | 
                         Sort-Object LastWriteTime -Descending | 
                         Select-Object -First 1;
                 if (\$latest) {

@@ -1,10 +1,10 @@
 import org.cocos.ci.*
 
-def call(Map cfg) {
+def call(Map ctx) {
 
-    def platform = cfg.platform
-    def channel  = cfg.channel
-    def envName  = cfg.env
+    def platform = ctx.platform
+    def channel  = ctx.channel
+    def envName  = ctx.env
 
     def artifactsRoot = "${ctx.env.WORKSPACE}\\..\\..\\artifacts"
     def manifestFile = "${artifactsRoot}\\JenkinsManifest.json"
@@ -17,7 +17,7 @@ def call(Map cfg) {
         ctx.writeFile file: manifestFile, text: '{}'
     }
 
-    def commit   = GitUtils.shortCommit()
+    def commit   = GitUtils.shortCommit(this)
     def time     = new Date().format("yyyy-MM-dd HH:mm:ss")
     def author   = env.BUILD_USER ?: "jenkins"
     def duration = currentBuild.durationString.replace(" and counting", "")
@@ -28,7 +28,7 @@ def call(Map cfg) {
 
     if (platform == "android") {
 
-        def (name, path, size) = ApkUtils.findLatestApk()
+        def (name, path, size) = ApkUtils.findLatestApk(this, ctx.params, ctx.env.WORKSPACE)
 
         artifact = [
             versionCode : env.ANDROID_VERSION_CODE as int,
