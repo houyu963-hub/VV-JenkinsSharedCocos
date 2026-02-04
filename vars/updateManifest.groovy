@@ -27,17 +27,17 @@ def call(ctx) {
     if (platform == "android") {
         echo "JenkinsManifest.json 更新中.."
         def raw = ApkUtils.findLatestApk(this, ctx.env.WORKSPACE, platform, channel, env)
-        def apkInfo = [:]
-        if (raw != 'NOT_FOUND') {
-            raw.readLines().each { line ->
-                def (k, v) = line.split('=', 2)
-                apkInfo[k.toLowerCase()] = v
-            }
-        }
-        
-        echo "APK name: ${apkInfo.name}"
-        echo "APK path: ${apkInfo.path}"
-        echo "APK size: ${apkInfo.size}"
+        // def apkInfo = [:]
+        // if (raw != 'NOT_FOUND') {
+        //     raw.readLines().each { line ->
+        //         def (k, v) = line.split('=', 2)
+        //         apkInfo[k.toLowerCase()] = v
+        //     }
+        // }
+
+        // echo "APK name: ${apkInfo.name}"
+        // echo "APK path: ${apkInfo.path}"
+        // echo "APK size: ${apkInfo.size}"
         echo "JenkinsManifest.json 更新中2.."
 
         artifact = [
