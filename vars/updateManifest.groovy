@@ -28,14 +28,14 @@ def call(Map cfg) {
 
     if (platform == "android") {
 
-        def apk = ApkUtils.findLatestApk()
+        def (name, path, size) = ApkUtils.findLatestApk()
 
         artifact = [
             versionCode : env.ANDROID_VERSION_CODE as int,
             versionName : env.ANDROID_VERSION_NAME,
-            name        : apk.name,
-            apk         : apk.path,
-            apkSize     : apk.size,
+            name        : name,
+            apk         : path,
+            apkSize     : size,
             time        : time,
             author      : author,
             commit      : commit,
