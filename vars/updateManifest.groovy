@@ -2,9 +2,9 @@ import org.cocos.ci.*
 
 def call(Map ctx) {
 
-    def platform = ctx.platform
-    def channel  = ctx.channel
-    def envName  = ctx.env
+    def platform = ctx.env.PLATFORM
+    def channel  = ctx.params.channel
+    def envName  = ctx.params.env
 
     def artifactsRoot = "${ctx.env.WORKSPACE}\\..\\..\\artifacts"
     def manifestFile = "${artifactsRoot}\\JenkinsManifest.json"
@@ -44,9 +44,21 @@ def call(Map ctx) {
     }
 
     if (platform == "web") {
-
+        // 获取最新的时间戳目录
+        def webRoot = "${artifactsRoot}\\${platform}\\${channel}\\${envName}"
+        def latestDir = bat(
+            script: """
+                powershell -Command "
+                Get-ChildItem -Path '${webRoot}' -Directory | 
+                Sort-Object LastWriteTime -Descending | 
+                Select-Object -First 1 -ExpandProperty Name
+                "
+            """,
+            returnStdout: true
+        ).trim()
+        
         artifact = [
-            url      : "artifacts/latest/build/web-mobile/index.html",
+            url      : "${webRoot}\\${latestDir}\\index.html",
             time     : time,
             author   : author,
             commit   : commit,
