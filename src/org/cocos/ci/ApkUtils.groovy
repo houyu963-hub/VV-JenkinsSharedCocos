@@ -32,16 +32,20 @@ class ApkUtils implements Serializable {
     }
 
     // 上个apk 物理信息
-    static void findLatestApk() {
-        script.bat(
+    static String findLatestApk(script, workspace, platform, channel, env) {
+        def apkDir = "${workspace}\\..\\..\\artifacts\\${platform}\\${channel}\\${env}"
+        return script.bat(
             script: """
                 powershell -Command "
                 \$latest = Get-ChildItem -Path '${apkDir}' -Filter '*.apk' -Recurse -ErrorAction SilentlyContinue |
                           Sort-Object LastWriteTime -Descending |
                           Select-Object -First 1;
                 if (\$latest) {
-                    
+                    Write-Output ('NAME=' + \$latest.Name);
+                    Write-Output ('PATH=' + \$latest.FullName);
+                    Write-Output ('SIZE=' + [Math]::Round(\$latest.Length / 1MB, 2));
                 } else {
+                    Write-Output 'NOT_FOUND'
                 }
                 "
             """,
