@@ -35,8 +35,6 @@ class ApkUtils implements Serializable {
     static def findLatestApk(script, ctx) {
         def apkDir = "${ctx.env.WORKSPACE}\\..\\..\\artifacts\\${ctx.env.PLATFORM}\\${ctx.params.channel}\\${ctx.params.env}"
         
-        echo "Searching for latest APK in: ${apkDir}"
-        
         // 使用简单的 bat 命令获取信息
         def name = script.bat(
             script: "dir \"${apkDir}\" /s /b *.apk | sort /r | head -n 1",
@@ -44,7 +42,6 @@ class ApkUtils implements Serializable {
         ).trim()
         
         if (name.empty) {
-            echo "No APK found"
             return [name: "", path: "", size: "0MB"]
         }
         
@@ -55,8 +52,6 @@ class ApkUtils implements Serializable {
         ).trim().toLong()
         
         def sizeMB = String.format("%.2f", sizeBytes / 1024.0 / 1024.0)
-        
-        echo "Latest APK: ${name}, Size: ${sizeMB}MB"
         
         return [
             name: new File(name).name,

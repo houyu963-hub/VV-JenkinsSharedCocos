@@ -29,6 +29,7 @@ def call(ctx) {
         echo "JenkinsManifest.json 更新中.."
         def apkInfo = ApkUtils.findLatestApk(this, ctx)
         echo "JenkinsManifest.json 更新中2.."
+        echo apkInfo
 
         artifact = [
             versionCode : ctx.env.ANDROID_VERSION_CODE as int,
