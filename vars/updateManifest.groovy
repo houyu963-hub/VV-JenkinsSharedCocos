@@ -30,7 +30,7 @@ def call(ctx) {
         def apkDir = "${artifactsRoot}\\${platform}\\${channel}\\${env}"
         def apkInfo = bat """
             powershell -Command "
-                Get-ChildItem -Path '${webRoot}' -Directory | 
+                Get-ChildItem -Path '${apkDir}' -Directory | 
                 Sort-Object LastWriteTime -Descending | 
                 Select-Object -First 1 -ExpandProperty Name
                 "
