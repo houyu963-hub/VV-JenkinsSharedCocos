@@ -26,7 +26,6 @@ def call(ctx) {
 
     if (platform == "android") {
         echo "JenkinsManifest.json 更新中..2"
-        // def apkInfo = ApkUtils.findLatestApk(this, ctx)
         def apkDir = "${artifactsRoot}\\${platform}\\${channel}\\${env}"
         def apkInfo = bat """
             powershell -Command "
