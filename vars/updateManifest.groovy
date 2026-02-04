@@ -36,11 +36,8 @@ def call(ctx) {
                           Sort-Object LastWriteTime -Descending |
                           Select-Object -First 1;
                 if (\$latest) {
-                    Write-Output ('NAME=' + \$latest.Name);
-                    Write-Output ('PATH=' + \$latest.FullName);
-                    Write-Output ('SIZE=' + [Math]::Round(\$latest.Length / 1MB, 2));
+                   
                 } else {
-                    Write-Output 'NOT_FOUND'
                 }
                 "
             """,
