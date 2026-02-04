@@ -43,7 +43,7 @@ class ApkUtils implements Serializable {
                 '  Sort-Object Name -Descending | ' +
                 '  Select-Object -Skip ' + keep + ' | ' +
                 '  ForEach-Object { Remove-Item $_.FullName -Recurse -Force }' +
-                '}"'
+                '}"',
             returnStdout: true
         ).trim()
         
