@@ -32,14 +32,14 @@ class ApkUtils implements Serializable {
     }
 
     // 上个apk 物理信息
-    static def findLatestApk(script, ctx) {
-        def apkDir = "${ctx.env.WORKSPACE}\\..\\..\\artifacts\\${ctx.env.PLATFORM}\\${ctx.params.channel}\\${ctx.params.envName}"
-        def rawOutput = bat(
+    static Map findLatestApk(script, ctx) {
+        def apkDir = "${ctx.env.WORKSPACE}\\..\\..\\artifacts\\${ctx.env.PLATFORM}\\${ctx.params.channel}\\${ctx.params.env}"
+        def output = script.bat(
             script: """
                 powershell -Command "
                 \$latest = Get-ChildItem -Path '${apkDir}' -Filter '*.apk' -Recurse -ErrorAction SilentlyContinue |
-                        Sort-Object LastWriteTime -Descending |
-                        Select-Object -First 1;
+                          Sort-Object LastWriteTime -Descending |
+                          Select-Object -First 1;
                 if (\$latest) {
                     Write-Output ('NAME=' + \$latest.Name);
                     Write-Output ('PATH=' + \$latest.FullName);
@@ -52,8 +52,7 @@ class ApkUtils implements Serializable {
             returnStdout: true
         ).trim()
 
-        def apkInfo = parseApkInfo(rawOutput)
-        return apkInfo
+        return parseApkInfo(output)
     }
 
     @NonCPS
