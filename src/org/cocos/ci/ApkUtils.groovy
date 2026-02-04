@@ -32,18 +32,26 @@ class ApkUtils implements Serializable {
     }
 
     // 上个apk 物理信息
+    @NonCPS
     static def findLatestApk(script, ctx) {
         def apkDir = "${ctx.env.WORKSPACE}\\..\\..\\artifacts\\${ctx.env.PLATFORM}\\${ctx.params.channel}\\${ctx.params.env}"
         
         // 使用 bat 命令查找最新 APK
         def result = script.bat(
-            script:
-               'powershell -NoProfile -Command "& {' +
-                '  Get-ChildItem \'' + apkDir + '\' -Directory | ' +
-                '  Sort-Object Name -Descending | ' +
-                '  Select-Object -Skip ' + 20 + ' | ' +
-                '  ForEach-Object { Remove-Item $_.FullName -Recurse -Force }' +
-                '}"',
+            script: """
+                powershell -Command "
+                \$latest = Get-ChildItem -Path '' -Filter '*.apk' -Recurse -ErrorAction SilentlyContinue | 
+                    Sort-Object LastWriteTime -Descending | 
+                    Select-Object -First 1;
+                if (\$latest) {
+                    Write-Output ('NAME:' + \$latest.Name);
+                    Write-Output ('PATH:' + \$latest.FullName);
+                    Write-Output ('SIZE:' + [Math]::Round(\$latest.Length / 1MB, 2) + 'MB');
+                } else {
+                    Write-Output 'NOT_FOUND'
+                }
+                "
+            """,
             returnStdout: true
         ).trim()
         
