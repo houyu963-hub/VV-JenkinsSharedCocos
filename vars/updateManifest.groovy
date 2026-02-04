@@ -25,25 +25,8 @@ def call(ctx) {
     def artifact = [:]
 
     if (platform == "android") {
-        echo "JenkinsManifest.json 更新中..2"
-        def apkDir = "${artifactsRoot}\\${platform}\\${channel}\\${env}"
-        def apkInfo = bat """
-            powershell -Command "
-                Get-ChildItem -Path '${apkDir}' -Directory | 
-                Sort-Object LastWriteTime -Descending | 
-                Select-Object -First 1 -ExpandProperty Name
-                "
-            """
-        // 解析输出
-        // def lines = apkInfo.readLines()
-        // def name = lines.find { it.startsWith('NAME:') }?.substring(5) ?: ""
-        // def path = lines.find { it.startsWith('PATH:') }?.substring(5) ?: ""
-        // def size = lines.find { it.startsWith('SIZE:') }?.substring(5) ?: "0MB"
-        
-        // echo "APK name: ${name}"
-        // echo "APK path: ${path}"
-        // echo "APK size: ${size}"
-
+        echo "JenkinsManifest.json 更新中.."
+        def apkInfo = ApkUtils.findLatestApk(this, ctx)
         echo "JenkinsManifest.json 更新中2.."
 
         artifact = [
