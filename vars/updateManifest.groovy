@@ -30,20 +30,11 @@ def call(ctx) {
         def apkDir = "${artifactsRoot}\\${platform}\\${channel}\\${env}"
         def apkInfo = bat """
             powershell -Command "
-            \$latest = Get-ChildItem -Path ${apkDir} -Filter '*.apk' -Recurse -ErrorAction SilentlyContinue | 
-                    Sort-Object LastWriteTime -Descending | 
-                    Select-Object -First 1;
-            if (\$latest) {
-                Write-Output ('NAME:' + \$latest.Name);
-                Write-Output ('PATH:' + \$latest.FullName);
-                Write-Output ('SIZE:' + [Math]::Round(\$latest.Length / 1MB, 2) + 'MB');
-            } else {
-                Write-Output ('NAME:' + '');
-                Write-Output ('PATH:' + '');
-                Write-Output ('SIZE:' + '0MB');
-            }
-            "
-        """
+                Get-ChildItem -Path '${webRoot}' -Directory | 
+                Sort-Object LastWriteTime -Descending | 
+                Select-Object -First 1 -ExpandProperty Name
+                "
+            """
         // 解析输出
         // def lines = apkInfo.readLines()
         // def name = lines.find { it.startsWith('NAME:') }?.substring(5) ?: ""
