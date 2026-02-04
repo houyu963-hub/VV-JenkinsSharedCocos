@@ -31,45 +31,38 @@ class ApkUtils implements Serializable {
         return [name, code]
     }
 
-    // 上个apk 物理信息
-    @NonCPS
+    // 获取最新 apk 文件信息
     static def findLatestApk(script, ctx) {
         def apkDir = "${ctx.env.WORKSPACE}\\..\\..\\artifacts\\${ctx.env.PLATFORM}\\${ctx.params.channel}\\${ctx.params.env}"
         
-        // 使用 bat 命令查找最新 APK
-        def result = script.bat(
-            script: """
-                powershell -Command "
-                \$latest = Get-ChildItem -Path ${apkDir} -Filter '*.apk' -Recurse -ErrorAction SilentlyContinue | 
-                    Sort-Object LastWriteTime -Descending | 
-                    Select-Object -First 1;
-                if (\$latest) {
-                    Write-Output ('NAME:' + \$latest.Name);
-                    Write-Output ('PATH:' + \$latest.FullName);
-                    Write-Output ('SIZE:' + [Math]::Round(\$latest.Length / 1MB, 2) + 'MB');
-                } else {
-                    Write-Output 'NOT_FOUND'
-                }
-                "
-            """,
+        echo "Searching for latest APK in: ${apkDir}"
+        
+        // 使用简单的 bat 命令获取信息
+        def name = script.bat(
+            script: "dir \"${apkDir}\" /s /b *.apk | sort /r | head -n 1",
             returnStdout: true
         ).trim()
         
-        if (result == 'NOT_FOUND') {
-            echo NOT_FOUND apk
-            echo "Latest APK Information: name='', path='', size=0MB"
+        if (name.empty) {
+            echo "No APK found"
             return [name: "", path: "", size: "0MB"]
         }
         
-        // 解析输出
-        def lines = result.readLines()
-        def name = lines.find { it.startsWith('NAME:') }?.substring(5) ?: ""
-        def path = lines.find { it.startsWith('PATH:') }?.substring(5) ?: ""
-        def size = lines.find { it.startsWith('SIZE:') }?.substring(5) ?: "0MB"
-
-        echo "Latest APK Information: name=${name}, path=${path}, size=${size}"
+        // 获取文件大小
+        def sizeBytes = script.bat(
+            script: "for %i in (\"${name}\") do @echo %~zi",
+            returnStdout: true
+        ).trim().toLong()
         
-        return [name: name, path: path, size: size]
+        def sizeMB = String.format("%.2f", sizeBytes / 1024.0 / 1024.0)
+        
+        echo "Latest APK: ${name}, Size: ${sizeMB}MB"
+        
+        return [
+            name: new File(name).name,
+            path: name,
+            size: sizeMB + "MB"
+        ]
     }
 
     // 根据 versionCode 计算四位版本号
@@ -88,27 +81,5 @@ class ApkUtils implements Serializable {
         def fourth = base % 10
         
         return "${first.toInteger()}.${second.toInteger()}.${third.toInteger()}.${fourth.toInteger()}"
-    }
-
-    // 返回 apk 文件大小
-    static Map apkSize(script, String apkPath) {
-        if (!apkPath || !script.fileExists(apkPath)) {
-            return [bytes: 0, mb: "0.00"]
-        }
-        
-        try {
-            def bytes = script.bat(
-                script: "powershell -NoProfile -Command \"(Get-Item '${apkPath}').Length\"",
-                returnStdout: true
-            ).trim().toLong()
-
-            return [
-                bytes: bytes,
-                mb: String.format("%.2f", bytes / 1024.0 / 1024.0)
-            ]
-        } catch (Exception e) {
-            script.println("获取 APK 大小失败: ${e.message}")
-            return [bytes: 0, mb: "0.00"]
-        }
     }
 }
