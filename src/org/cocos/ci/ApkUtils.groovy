@@ -32,8 +32,8 @@ class ApkUtils implements Serializable {
     }
 
     // 上个apk 物理信息
-    static Map findLatestApk(script, ctx) {
-        def apkDir = "${ctx.env.WORKSPACE}\\..\\..\\artifacts\\${ctx.env.PLATFORM}\\${ctx.params.channel}\\${ctx.params.env}"
+    static Map findLatestApk(script, params, workspace, platform) {
+        def apkDir = "${workspace}\\..\\..\\artifacts\\${platform}\\${params.channel}\\${params.env}"
         def output = script.bat(
             script: """
                 powershell -Command "
