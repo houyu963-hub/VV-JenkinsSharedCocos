@@ -1,6 +1,7 @@
 import org.cocos.ci.*
 
 // copy 产物到 artifacts 目录
+@NonCPS
 def call(ctx) {
     if (ctx.env.PLATFORM == 'android' && !ctx.params.apk) { // is hotupdate
         return

@@ -63,6 +63,8 @@ class ApkUtils implements Serializable {
         def name = lines.find { it.startsWith('NAME:') }?.substring(5) ?: ""
         def path = lines.find { it.startsWith('PATH:') }?.substring(5) ?: ""
         def size = lines.find { it.startsWith('SIZE:') }?.substring(5) ?: "0MB"
+
+        echo "Latest APK Information: ${name}, ${path}, ${size}"
         
         return [name: name, path: path, size: size]
     }
