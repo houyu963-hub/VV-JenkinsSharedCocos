@@ -26,7 +26,7 @@ def call(ctx) {
 
     if (platform == "android") {
         echo "JenkinsManifest.json 更新中.."
-        def apkInfo = ApkUtils.findLatestApk(this, ctx.env.WORKSPACE, platform, channel, env)
+        def apkInfo = ApkUtils.findLatestApk(this, ctx)
 
         echo "APK name: ${apkInfo.name}"
         echo "APK path: ${apkInfo.path}"
