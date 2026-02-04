@@ -1,4 +1,4 @@
-package org.cocos.utils
+package org.cocos.ci
 
 // Git 工具类
 class GitUtils implements Serializable {

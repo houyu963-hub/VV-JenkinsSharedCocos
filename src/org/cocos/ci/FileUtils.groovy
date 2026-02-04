@@ -1,4 +1,4 @@
-package org.cocos.utils
+package org.cocos.ci
 
 // 文件 工具类
 class FileUtils implements Serializable {

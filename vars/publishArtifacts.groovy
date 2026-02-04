@@ -1,3 +1,5 @@
+import org.cocos.ci.*
+
 // copy 产物到 artifacts 目录
 def call(ctx) {
     if (ctx.env.PLATFORM == 'android' && !ctx.params.apk) { // is hotupdate
@@ -31,5 +33,5 @@ def call(ctx) {
     }
 
     // 清理旧目录 只保留 最近10 个
-    org.cocos.utils.FileUtils.cleanupOldDirs(this, root, 10)
+    FileUtils.cleanupOldDirs(this, root, 10)
 }

@@ -1,9 +1,9 @@
-package org.cocos.utils
+package org.cocos.ci
 
-// Android 工具类
-class AndroidUtils implements Serializable {
+// apk 工具类
+class ApkUtils implements Serializable {
 
-    // 获取最新 Android 版本信息 androidName/androidCode
+    // 上个apk 版本信息
     static List resolveVersion(script, params, workspace) {
         def manifestFile = "${workspace}/publish/JenkinsManifest.json"
 
@@ -13,7 +13,7 @@ class AndroidUtils implements Serializable {
         if (script.fileExists(manifestFile)) {
             def m = script.readJSON(file: manifestFile)
             def list = m?.android?."${params.channel}"?."${params.env}"
-            if (list) {
+            if (list && list.size() > 0) {
                 lastName = list[0].versionName
                 lastCode = list[0].versionCode as int
             }
@@ -29,6 +29,26 @@ class AndroidUtils implements Serializable {
             : calculateVersionName(code)
 
         return [name, code]
+    }
+
+    // 上个apk 物理信息
+    static def findLatestApk() {
+        def files = new File("build").traverse {
+            if (it.name.endsWith(".apk")) it
+        }
+
+        def apk = files.max { it.lastModified() }
+
+        def sizeMB = String.format(
+            "%.2f",
+            apk.length() / 1024 / 1024
+        )
+
+        return [
+            name : apk.name,
+            path : apk.path.replace("\\", "/"),
+            size : sizeMB + "MB"
+        ]
     }
 
     // 根据 versionCode 计算四位版本号
@@ -51,14 +71,23 @@ class AndroidUtils implements Serializable {
 
     // 返回 apk 文件大小
     static Map apkSize(script, String apkPath) {
-        def bytes = script.bat(
-            script: "powershell -NoProfile -Command \"(Get-Item '${apkPath}').Length\"",
-            returnStdout: true
-        ).trim().toLong()
+        if (!apkPath || !script.fileExists(apkPath)) {
+            return [bytes: 0, mb: "0.00"]
+        }
+        
+        try {
+            def bytes = script.bat(
+                script: "powershell -NoProfile -Command \"(Get-Item '${apkPath}').Length\"",
+                returnStdout: true
+            ).trim().toLong()
 
-        return [
-            bytes: bytes,
-            mb: String.format("%.2f", bytes / 1024.0 / 1024.0)
-        ]
+            return [
+                bytes: bytes,
+                mb: String.format("%.2f", bytes / 1024.0 / 1024.0)
+            ]
+        } catch (Exception e) {
+            script.println("获取 APK 大小失败: ${e.message}")
+            return [bytes: 0, mb: "0.00"]
+        }
     }
 }

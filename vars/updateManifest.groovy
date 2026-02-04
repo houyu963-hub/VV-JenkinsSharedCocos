@@ -1,36 +1,66 @@
-// 更新JenkinsManifest.json
-def call(ctx) {
+import org.cocos.ci.*
+
+def call(Map cfg) {
+
+    def platform = cfg.platform
+    def channel  = cfg.channel
+    def envName  = cfg.env
+
     def artifactsRoot = "${ctx.env.WORKSPACE}\\..\\..\\artifacts"
     def manifestFile = "${artifactsRoot}\\JenkinsManifest.json"
 
-    if (!fileExists(manifestFile)) {
-        writeFile file: manifestFile, text: "{}"
+    def commit   = GitUtils.shortCommit()
+    def time     = new Date().format("yyyy-MM-dd HH:mm:ss")
+    def author   = env.BUILD_USER ?: "jenkins"
+    def duration = currentBuild.durationString.replace(" and counting", "")
+
+    def manifest = FileUtils.readJson(manifestFile)
+
+    def artifact = [:]
+
+    if (platform == "android") {
+
+        def apk = ApkUtils.findLatestApk()
+
+        artifact = [
+            versionCode : env.android_version_code as int,,
+            versionName : env.android_version_name,
+            name        : apk.name,
+            apk         : apk.path,
+            apkSize     : apk.size,
+            time        : time,
+            author      : author,
+            commit      : commit,
+            duration    : duration
+        ]
     }
 
-    def manifest = readJSON(file: manifestFile)
+    if (platform == "web") {
 
-    def commit = org.cocos.utils.GitUtils.shortCommit(this)
-    def time = new Date().format("yyyy-MM-dd HH:mm:ss")
+        artifact = [
+            url      : "artifacts/latest/build/web-mobile/index.html",
+            time     : time,
+            author   : author,
+            commit   : commit,
+            duration : duration
+        ]
+    }
 
-    def artifact = [
-        time: time,
-        author: ctx.env.BUILD_USER ?: "jenkins",
-        commit: commit,
-        duration: currentBuild.durationString
-    ]
+    manifest
+        .get(platform, [:])
+        .get(channel, [:])
+        .get(envName, [])
 
-    manifest[ctx.env.PLATFORM] =
-        manifest.get(ctx.env.PLATFORM, [:])
+    manifest[platform] = manifest[platform] ?: [:]
+    manifest[platform][channel] = manifest[platform][channel] ?: [:]
+    manifest[platform][channel][envName] =
+        (manifest[platform][channel][envName] ?: [])
 
-    manifest[ctx.env.PLATFORM][ctx.params.channel] =
-        manifest[ctx.env.PLATFORM][ctx.params.channel] ?: [:]
+    manifest[platform][channel][envName].add(0, artifact)
+    manifest[platform][channel][envName] =
+        manifest[platform][channel][envName].take(10)
 
-    manifest[ctx.env.PLATFORM][ctx.params.channel][ctx.params.env] =
-        (manifest[ctx.env.PLATFORM][ctx.params.channel][ctx.params.env] ?: [])
+    FileUtils.writeJson(manifestFile, manifest)
 
-    manifest[ctx.env.PLATFORM][ctx.params.channel][ctx.params.env].add(0, artifact)
-    manifest[ctx.env.PLATFORM][ctx.params.channel][ctx.params.env] =
-        manifest[ctx.env.PLATFORM][ctx.params.channel][ctx.params.env].take(10)
-
-    writeJSON file: manifestFile, json: manifest, pretty: 2
+    echo "✅ JenkinsManifest.json 已更新"
 }

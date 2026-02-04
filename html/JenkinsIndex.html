@@ -141,13 +141,16 @@
         .then(res => res.json())
         .then(data => render(data))
         .catch(err => {
-            document.getElementById('app').innerHTML = '❌ manifest.json 加载失败';
+            document.getElementById('error-message').innerHTML = '❌ manifest.json 加载失败';
             console.error(err);
         });
 
     function render(data) {
         const app = document.getElementById('app');
         app.innerHTML = '';
+
+        const error_message = document.getElementById('error-message');
+        error_message.innerHTML = '';
 
         Object.entries(data).forEach(([platform, channels]) => {
             app.appendChild(renderPlatform(platform, channels));
@@ -267,10 +270,19 @@
     }
 </script>
 
+
 <body>
-
     <h1>📦 构建产物列表</h1>
-
+    <!-- 这是渲染内容的容器 -->
+    <div id="app">
+        <!-- 初始加载提示 -->
+        <div style="text-align: center; padding: 20px;">
+            🔄 正在加载构建产物列表...
+        </div>
+    </div>
+    <!-- 错误信息显示区域 -->
+    <div id="error-message" style="display: none; color: red; text-align: center; padding: 20px;"></div>
 </body>
+
 
 </html>
