@@ -1,5 +1,6 @@
 import org.cocos.ci.*
 
+@NonCPS
 def call(ctx) {
 
     def platform = ctx.env.PLATFORM
