@@ -32,18 +32,21 @@ class ApkUtils implements Serializable {
     }
 
     // 上个apk 物理信息
-    static String findLatestApk(script, workspace, platform, channel, env) {
-        def apkDir = "${workspace}\\..\\..\\artifacts\\${platform}\\${channel}\\${env}"
-        return script.bat(
+    @NonCPS
+    static def findLatestApk(script, ctx) {
+        def apkDir = "${ctx.env.WORKSPACE}\\..\\..\\artifacts\\${ctx.env.PLATFORM}\\${ctx.params.channel}\\${ctx.params.env}"
+        
+        // 使用 bat 命令查找最新 APK
+        def result = script.bat(
             script: """
                 powershell -Command "
-                \$latest = Get-ChildItem -Path '${apkDir}' -Filter '*.apk' -Recurse -ErrorAction SilentlyContinue |
-                          Sort-Object LastWriteTime -Descending |
-                          Select-Object -First 1;
+                \$latest = Get-ChildItem -Path '${apkDir}' -Filter '*.apk' -Recurse -ErrorAction SilentlyContinue | 
+                        Sort-Object LastWriteTime -Descending | 
+                        Select-Object -First 1;
                 if (\$latest) {
-                    Write-Output ('NAME=' + \$latest.Name);
-                    Write-Output ('PATH=' + \$latest.FullName);
-                    Write-Output ('SIZE=' + [Math]::Round(\$latest.Length / 1MB, 2));
+                    Write-Output ('NAME:' + \$latest.Name);
+                    Write-Output ('PATH:' + \$latest.FullName);
+                    Write-Output ('SIZE:' + [Math]::Round(\$latest.Length / 1MB, 2) + 'MB');
                 } else {
                     Write-Output 'NOT_FOUND'
                 }
@@ -51,6 +54,18 @@ class ApkUtils implements Serializable {
             """,
             returnStdout: true
         ).trim()
+        
+        if (result == 'NOT_FOUND') {
+            return [name: "", path: "", size: "0MB"]
+        }
+        
+        // 解析输出
+        def lines = result.readLines()
+        def name = lines.find { it.startsWith('NAME:') }?.substring(5) ?: ""
+        def path = lines.find { it.startsWith('PATH:') }?.substring(5) ?: ""
+        def size = lines.find { it.startsWith('SIZE:') }?.substring(5) ?: "0MB"
+        
+        return [name: name, path: path, size: size]
     }
 
     // 根据 versionCode 计算四位版本号

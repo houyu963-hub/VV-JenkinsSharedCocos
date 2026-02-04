@@ -26,35 +26,7 @@ def call(ctx) {
 
     if (platform == "android") {
         echo "JenkinsManifest.json 更新中.."
-        // def raw = ApkUtils.findLatestApk(this, ctx.env.WORKSPACE, platform, channel, env)
-
-        def apkDir = "${artifactsRoot}\\${platform}\\${channel}\\${env}"
-        def raw = bat(
-            script: """
-                powershell -Command "
-                \$latest = Get-ChildItem -Path '${apkDir}' -Filter '*.apk' -Recurse -ErrorAction SilentlyContinue |
-                          Sort-Object LastWriteTime -Descending |
-                          Select-Object -First 1;
-                if (\$latest) {
-                   
-                } else {
-                }
-                "
-            """,
-            returnStdout: true
-        ).trim()
-
-        def apkInfo = [:]
-        if (raw == 'NOT_FOUND') {
-            apkInfo.name = ''
-            apkInfo.path = ''
-            apkInfo.size = '0 MB'
-        } else {
-            raw.readLines().each { line ->
-                def (k, v) = line.split('=', 2)
-                apkInfo[k.toLowerCase()] = v
-            }
-        }
+        def apkInfo = ApkUtils.findLatestApk(this, ctx.env.WORKSPACE, platform, channel, env)
 
         echo "APK name: ${apkInfo.name}"
         echo "APK path: ${apkInfo.path}"
