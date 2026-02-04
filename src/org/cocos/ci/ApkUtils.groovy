@@ -32,6 +32,7 @@ class ApkUtils implements Serializable {
     }
 
     // 上个apk 物理信息
+    @NonCPS
     static def findLatestApk(script, ctx) {
         def apkDir = "${ctx.env.WORKSPACE}\\..\\..\\artifacts\\${ctx.env.PLATFORM}\\${ctx.params.channel}\\${ctx.params.envName}"
         
