@@ -33,7 +33,6 @@ class ApkUtils implements Serializable {
 
     // 上个apk 物理信息
     static def findLatestApk(script, ctx) {
-        echo "findLatestApk1"
         def apkDir = "${ctx.env.WORKSPACE}\\..\\..\\artifacts\\${ctx.env.PLATFORM}\\${ctx.params.channel}\\${ctx.params.env}"
         
         // 使用 bat 命令查找最新 APK
