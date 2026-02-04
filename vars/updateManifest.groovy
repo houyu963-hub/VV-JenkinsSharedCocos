@@ -9,9 +9,6 @@ def call(ctx) {
     def artifactsRoot = "${ctx.env.WORKSPACE}\\..\\..\\artifacts"
     def manifestFile = "${artifactsRoot}\\JenkinsManifest.json"
 
-    // 创建目录（如果不存在）
-    bat "mkdir \"${artifactsRoot}\" 2>nul"
-
     // 确保 manifest 文件存在
     if (!ctx.fileExists(manifestFile)) {
         ctx.writeFile file: manifestFile, text: '{}'
