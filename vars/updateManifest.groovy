@@ -4,7 +4,7 @@ def call(ctx) {
 
     def platform = ctx.env.PLATFORM
     def channel  = ctx.params.channel
-    def envName  = ctx.params.env
+    def env  = ctx.params.env
 
     def artifactsRoot = "${ctx.env.WORKSPACE}\\..\\..\\artifacts"
     def manifestFile = "${artifactsRoot}\\JenkinsManifest.json"
@@ -26,7 +26,7 @@ def call(ctx) {
 
     if (platform == "android") {
         echo "JenkinsManifest.json 更新中.."
-        def (name, path, size) = ApkUtils.findLatestApk(this, ctx.params, ctx.env.WORKSPACE, platform)
+        def (name, path, size) = ApkUtils.findLatestApk(this, ctx.env.WORKSPACE, platform, channel, env)
         echo "JenkinsManifest.json 更新中2.."
         artifact = [
             versionCode : ctx.env.ANDROID_VERSION_CODE as int,
@@ -43,7 +43,7 @@ def call(ctx) {
 
     if (platform == "web") {
         // 获取最新的时间戳目录
-        def webRoot = "${artifactsRoot}\\${platform}\\${channel}\\${envName}"
+        def webRoot = "${artifactsRoot}\\${platform}\\${channel}\\${env}"
         def latestDir = bat(
             script: """
                 powershell -Command "
@@ -67,16 +67,16 @@ def call(ctx) {
     manifest
         .get(platform, [:])
         .get(channel, [:])
-        .get(envName, [])
+        .get(env, [])
 
     manifest[platform] = manifest[platform] ?: [:]
     manifest[platform][channel] = manifest[platform][channel] ?: [:]
-    manifest[platform][channel][envName] =
-        (manifest[platform][channel][envName] ?: [])
+    manifest[platform][channel][env] =
+        (manifest[platform][channel][env] ?: [])
 
-    manifest[platform][channel][envName].add(0, artifact)
-    manifest[platform][channel][envName] =
-        manifest[platform][channel][envName].take(10)
+    manifest[platform][channel][env].add(0, artifact)
+    manifest[platform][channel][env] =
+        manifest[platform][channel][env].take(10)
     echo "JenkinsManifest.json 更新中..."
     FileUtils.writeJson(manifestFile, manifest)
 
