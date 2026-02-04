@@ -41,7 +41,7 @@ class ApkUtils implements Serializable {
                'powershell -NoProfile -Command "& {' +
                 '  Get-ChildItem \'' + apkDir + '\' -Directory | ' +
                 '  Sort-Object Name -Descending | ' +
-                '  Select-Object -Skip ' + keep + ' | ' +
+                '  Select-Object -Skip ' + 20 + ' | ' +
                 '  ForEach-Object { Remove-Item $_.FullName -Recurse -Force }' +
                 '}"',
             returnStdout: true
