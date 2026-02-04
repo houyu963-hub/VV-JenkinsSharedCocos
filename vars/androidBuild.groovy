@@ -8,8 +8,8 @@ def call(ctx) {
     def new_versionName = ctx.params.versionName ?: versionName
     def new_versionCode = ctx.params.versionCode ?: versionCode
 
-    ctx.env.android_version_name =  new_versionName
-    ctx.env.android_version_code = new_versionCode
+    ctx.env.ANDROID_VERSION_NAME = new_versionName
+    ctx.env.ANDROID_VERSION_CODE = new_versionCode
 
     dir('build/android/proj') {
         bat """

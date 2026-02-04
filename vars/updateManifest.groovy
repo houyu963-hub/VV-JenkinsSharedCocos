@@ -9,6 +9,14 @@ def call(Map cfg) {
     def artifactsRoot = "${ctx.env.WORKSPACE}\\..\\..\\artifacts"
     def manifestFile = "${artifactsRoot}\\JenkinsManifest.json"
 
+    // 创建目录（如果不存在）
+    bat "mkdir \"${artifactsRoot}\" 2>nul"
+
+    // 确保 manifest 文件存在
+    if (!ctx.fileExists(manifestFile)) {
+        ctx.writeFile file: manifestFile, text: '{}'
+    }
+
     def commit   = GitUtils.shortCommit()
     def time     = new Date().format("yyyy-MM-dd HH:mm:ss")
     def author   = env.BUILD_USER ?: "jenkins"
@@ -23,8 +31,8 @@ def call(Map cfg) {
         def apk = ApkUtils.findLatestApk()
 
         artifact = [
-            versionCode : env.android_version_code as int,,
-            versionName : env.android_version_name,
+            versionCode : env.ANDROID_VERSION_CODE as int,
+            versionName : env.ANDROID_VERSION_NAME,
             name        : apk.name,
             apk         : apk.path,
             apkSize     : apk.size,
