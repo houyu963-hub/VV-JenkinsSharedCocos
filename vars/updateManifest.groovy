@@ -1,7 +1,6 @@
 import org.cocos.ci.*
 
 // 更新JenkinsManifest.json
-@NonCPS
 def call(ctx) {
 
     def platform = ctx.env.PLATFORM
