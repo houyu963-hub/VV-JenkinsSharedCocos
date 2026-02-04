@@ -15,7 +15,7 @@ def call(ctx) {
     if (!ctx.fileExists(manifestFile)) {
         ctx.writeFile file: manifestFile, text: '{}'
     }
-
+    echo "JenkinsManifest.json 更新中"
     def commit   = GitUtils.shortCommit(this)
     def time     = new Date().format("yyyy-MM-dd HH:mm:ss")
     def author   = ctx.env.BUILD_USER ?: "jenkins"

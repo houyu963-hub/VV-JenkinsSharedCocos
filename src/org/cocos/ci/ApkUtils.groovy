@@ -55,6 +55,8 @@ class ApkUtils implements Serializable {
         ).trim()
         
         if (result == 'NOT_FOUND') {
+            echo NOT_FOUND apk
+            echo "Latest APK Information: name='', path='', size=0MB"
             return [name: "", path: "", size: "0MB"]
         }
         
@@ -64,7 +66,7 @@ class ApkUtils implements Serializable {
         def path = lines.find { it.startsWith('PATH:') }?.substring(5) ?: ""
         def size = lines.find { it.startsWith('SIZE:') }?.substring(5) ?: "0MB"
 
-        echo "Latest APK Information: ${name}, ${path}, ${size}"
+        echo "Latest APK Information: name=${name}, path=${path}, size=${size}"
         
         return [name: name, path: path, size: size]
     }
