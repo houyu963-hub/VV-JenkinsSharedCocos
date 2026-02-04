@@ -31,8 +31,8 @@ def call(Map ctx) {
         def (name, path, size) = ApkUtils.findLatestApk(this, ctx.params, ctx.env.WORKSPACE)
 
         artifact = [
-            versionCode : env.ANDROID_VERSION_CODE as int,
-            versionName : env.ANDROID_VERSION_NAME,
+            versionCode : ctx.env.ANDROID_VERSION_CODE as int,
+            versionName : ctx.env.ANDROID_VERSION_NAME,
             name        : name,
             apk         : path,
             apkSize     : size,
