@@ -2,6 +2,11 @@ import org.cocos.ci.*
 
 // copy 产物到 artifacts 目录
 def call(ctx) {
+    def timeDir = new Date().format("yyyyMMdd_HHmmss")
+    def root = "${ctx.env.WORKSPACE}\\..\\..\\artifacts\\${ctx.env.PLATFORM}\\${ctx.params.channel}\\${ctx.params.env}"
+    def target = "${root}\\${timeDir}"
+
+
     if (ctx.env.PLATFORM == 'web') {
         bat "xcopy /E /I /Y build\\web-mobile \"${target}\""
     }
