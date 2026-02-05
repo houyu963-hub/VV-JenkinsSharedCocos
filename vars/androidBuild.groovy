@@ -20,7 +20,7 @@ def call(ctx) {
     def outputDir = "${ctx.env.WORKSPACE}\\..\\..\\artifacts\\${ctx.env.PLATFORM}\\${params.channel}\\${params.env}"
     ctx.env.APK_PATH = outputDir
 
-    def variantName = ${params.channel.capitalize()}${params.mode.capitalize()}
+    def variantName = "${params.channel.capitalize()}${params.mode.capitalize()}"
     dir('build/android/proj') {
         bat """
         gradlew assemble${variantName} copy${variantName}Apk \
