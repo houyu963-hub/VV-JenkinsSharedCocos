@@ -19,9 +19,9 @@ pipeline {
   }
 
   stages {
-    // stage('Start') {
-    //   steps { cocosPipeline(this) }
-    // }
+    stage('Start') {
+      steps { cocosPipeline(this) }
+    }
 
     stage('Android') {
       when {

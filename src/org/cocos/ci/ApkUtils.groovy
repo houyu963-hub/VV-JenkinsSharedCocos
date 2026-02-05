@@ -31,36 +31,6 @@ class ApkUtils implements Serializable {
         return [name, code]
     }
 
-    // 获取最新 apk 文件信息
-    static def findLatestApk(script, ctx) {
-        def apkDir = "${ctx.env.WORKSPACE}\\..\\..\\artifacts\\${ctx.env.PLATFORM}\\${ctx.params.channel}\\${ctx.params.env}"
-        
-        // 使用简单的 bat 命令获取信息
-        @NonCPS
-        def name = script.bat(
-            script: "dir \"${apkDir}\" /s /b *.apk | sort /r | head -n 1",
-            returnStdout: true
-        ).trim()
-        
-        if (name.empty) {
-            return [name: "", path: "", size: "0MB"]
-        }
-        
-        // 获取文件大小
-        def sizeBytes = script.bat(
-            script: "for %i in (\"${name}\") do @echo %~zi",
-            returnStdout: true
-        ).trim().toLong()
-        
-        def sizeMB = String.format("%.2f", sizeBytes / 1024.0 / 1024.0)
-        
-        return [
-            name: new File(name).name,
-            path: name,
-            size: sizeMB + "MB"
-        ]
-    }
-
     // 根据 versionCode 计算四位版本号
     private static String calculateVersionName(int versionCode) {
         // 基础版本：1000 -> 1.0.0.0
@@ -77,5 +47,27 @@ class ApkUtils implements Serializable {
         def fourth = base % 10
         
         return "${first.toInteger()}.${second.toInteger()}.${third.toInteger()}.${fourth.toInteger()}"
+    }
+
+    // 返回 apk 文件大小
+    static Map apkSize(script, String apkPath) {
+        if (!apkPath || !script.fileExists(apkPath)) {
+            return [bytes: 0, mb: "0.00"]
+        }
+        
+        try {
+            def bytes = script.bat(
+                script: "powershell -NoProfile -Command \"(Get-Item '${apkPath}').Length\"",
+                returnStdout: true
+            ).trim().toLong()
+
+            return [
+                bytes: bytes,
+                mb: String.format("%.2f", bytes / 1024.0 / 1024.0)
+            ]
+        } catch (Exception e) {
+            script.println("获取 APK 大小失败: ${e.message}")
+            return [bytes: 0, mb: "0.00"]
+        }
     }
 }
