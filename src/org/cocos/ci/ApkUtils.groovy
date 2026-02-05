@@ -33,19 +33,12 @@ class ApkUtils implements Serializable {
 
     // 根据 versionCode 计算四位版本号
     private static String calculateVersionName(int versionCode) {
-        // 基础版本：1000 -> 1.0.0.0
-        // 1001 -> 1.0.0.1
-        // 1010 -> 1.0.1.0
-        // 1100 -> 1.1.0.0
-        // 2000 -> 2.0.0.0
-        
+        // 1000 -> 1.0.0.0, 1001 -> 1.0.0.1, 1010 -> 1.0.1.0
         def base = versionCode - 1000  // 从1000开始计算偏移量
-        
-        def first = base / 1000
+        def first = (base / 1000) + 1
         def second = (base % 1000) / 100
         def third = (base % 100) / 10
         def fourth = base % 10
-        
         return "${first.toInteger()}.${second.toInteger()}.${third.toInteger()}.${fourth.toInteger()}"
     }
 

@@ -16,8 +16,10 @@ def call(ctx) {
     def apkName = "Game_${params.channel}_${params.env}_${params.mode}_v${new_versionName}.apk"
     ctx.env.APK_NAME = apkName
 
+    def timeDir = new Date().format("yyyyMMdd_HHmmss")
+
     // apk输出目录
-    def outputDir = "${ctx.env.WORKSPACE}\\..\\..\\artifacts\\${ctx.env.PLATFORM}\\${params.channel}\\${params.env}"
+    def outputDir = "${ctx.env.WORKSPACE}\\..\\..\\artifacts\\${ctx.env.PLATFORM}\\${params.channel}\\${params.env}\\${timeDir}"
     ctx.env.APK_PATH = outputDir
 
     def variantName = "${params.channel.capitalize()}${params.mode.capitalize()}"
