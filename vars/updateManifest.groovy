@@ -31,7 +31,7 @@ def call(ctx) {
         def size = ctx.env.APK_SIZE
 
         artifact = [
-            versionCode : versionCode
+            versionCode : versionCode,
             versionName : versionName,
             name        : name,
             apk         : path,
