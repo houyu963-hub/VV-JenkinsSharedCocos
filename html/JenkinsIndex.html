@@ -103,6 +103,15 @@
         }
 
         /* ===== BUTTON ===== */
+        .title {
+            font-weight: 500;
+            color: #333;
+            max-width: 1000px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
         .btn {
             padding: 5px 8px;
             border-radius: 6px;
@@ -221,13 +230,17 @@
         el.style.display = show ? 'block' : 'none';
 
         const isWeb = platform === 'web';
+        const apkName = item.name || '未知APK';
 
         el.innerHTML = `
     <div class="item-main">
       <div>
+        <span class="title">${isWeb ? '点击运行启动游戏' : apkName}</span>
+      </div>
+      <div>
         ${isWeb
-                ? `<a class="btn btn-run" href="${item.url}" target="_blank">运行</a>`
-                : `<a class="btn btn-download" href="${item.apk}">APK</a>`
+                ? `<a class="btn btn-run" href="${item.path}" target="_blank">运行</a>`
+                : `<a class="btn btn-download" href="${item.path}">下载</a>`
             }
         <span class="btn btn-toggle" onclick="toggleExtra(this)">详情</span>
       </div>
@@ -237,9 +250,12 @@
       作者:${item.author}<br/>
       ${item.versionCode ? `版本号:${item.versionCode}<br/>` : ''}
       ${item.versionName ? `版本名:${item.versionName}<br/>` : ''}
-      ${item.hotupdateVersion ? `热更新版本:${item.hotupdateVersion}<br/>` : ''}
+      ${item.versioHot ? `热更新版本:${item.versioHot}<br/>` : ''}
+      ${item.name ? `apk名:${item.name}<br/>` : ''}
+      ${item.path ? `apk路径:${item.path}<br/>` : ''}
+      ${item.size ? `apk大小:${item.size}<br/>` : ''}
+      时间:${item.time}<br/>
       Git:${item.commit}<br/>
-      包大小:${item.apkSize}<br/>
       构建耗时:${item.duration}
     </div>
   `;
@@ -272,7 +288,7 @@
 
 
 <body>
-    <h1>📦 构建产物列表</h1>
+    <!-- <h1>📦 构建产物列表</h1> -->
     <!-- 这是渲染内容的容器 -->
     <div id="app">
         <!-- 初始加载提示 -->

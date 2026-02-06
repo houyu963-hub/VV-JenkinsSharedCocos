@@ -35,7 +35,8 @@ class FileUtils implements Serializable {
     }
 
     // 获取文件大小
-    static long getFileSize(path) {
-        return new File(path).length()
+    static String getFileSizeMB(path) {
+        def bytes = new File(path).length()
+        return String.format("%.2f MB", bytes / 1024.0 / 1024.0)
     }
 }

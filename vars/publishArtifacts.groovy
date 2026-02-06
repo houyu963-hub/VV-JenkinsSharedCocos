@@ -6,11 +6,10 @@ def call(ctx) {
     def root = "${ctx.env.WORKSPACE}\\..\\..\\artifacts\\${ctx.env.PLATFORM}\\${ctx.params.channel}\\${ctx.params.env}"
     def target = "${root}\\${timeDir}"
 
-
     if (ctx.env.PLATFORM == 'web') {
         bat "xcopy /E /I /Y build\\web-mobile \"${target}\""
     }
-
+    ctx.env.INDEX_URL = "${target}\\index.html"
     // 清理旧目录 只保留 最近10 个
     FileUtils.cleanupOldDirs(this, root, 10)
 }

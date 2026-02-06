@@ -29,27 +29,29 @@ def call(ctx) {
         def name = ctx.env.APK_NAME
         def path = ctx.env.APK_PATH
         def size = ctx.env.APK_SIZE
+        def hot = ctx.env.HOT_VERSION
 
         artifact = [
+            author      : author,
             versionCode : versionCode,
             versionName : versionName,
+            versioHot   : hot,
             name        : name,
-            apk         : path,
+            path        : path,
             size        : size,
             time        : time,
-            author      : author,
             commit      : commit,
             duration    : duration
         ]
     }
 
     if (platform == "web") {
-        def url = ctx.env.INDEX_URL
+        def path = ctx.env.INDEX_URL
         
         artifact = [
-            url      : url,
-            time     : time,
             author   : author,
+            time     : time,
+            path      : path,
             commit   : commit,
             duration : duration
         ]
