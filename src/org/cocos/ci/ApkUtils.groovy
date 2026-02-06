@@ -42,25 +42,4 @@ class ApkUtils implements Serializable {
         return "${first.toInteger()}.${second.toInteger()}.${third.toInteger()}.${fourth.toInteger()}"
     }
 
-    // 返回 apk 文件大小
-    static Map apkSize(script, String apkPath) {
-        if (!apkPath || !script.fileExists(apkPath)) {
-            return [bytes: 0, mb: "0.00"]
-        }
-        
-        try {
-            def bytes = script.bat(
-                script: "powershell -NoProfile -Command \"(Get-Item '${apkPath}').Length\"",
-                returnStdout: true
-            ).trim().toLong()
-
-            return [
-                bytes: bytes,
-                mb: String.format("%.2f", bytes / 1024.0 / 1024.0)
-            ]
-        } catch (Exception e) {
-            script.println("获取 APK 大小失败: ${e.message}")
-            return [bytes: 0, mb: "0.00"]
-        }
-    }
 }

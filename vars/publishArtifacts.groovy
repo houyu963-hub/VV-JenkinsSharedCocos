@@ -12,5 +12,5 @@ def call(ctx) {
     }
 
     // 清理旧目录 只保留 最近10 个
-    // FileUtils.cleanupOldDirs(this, root, 10)
+    FileUtils.cleanupOldDirs(this, root, 10)
 }

@@ -5,8 +5,10 @@ class FileUtils implements Serializable {
 
     // 清理旧目录 保留最新的 keep 个目录
     static void cleanupOldDirs(script, String baseDir, int keep) {
-        if (!script.fileExists(baseDir)) return
-
+        if (!script.fileExists(baseDir)){
+            script.echo "Directory ${baseDir} does not exist"
+            return
+        }
         script.bat(
             script:
                 'powershell -NoProfile -Command "& {' +
@@ -30,5 +32,10 @@ class FileUtils implements Serializable {
             groovy.json.JsonOutput.toJson(obj)
         )
         new File(path).write(json, "UTF-8")
+    }
+
+    // 获取文件大小
+    static long getFileSize(path) {
+        return new File(path).length()
     }
 }
