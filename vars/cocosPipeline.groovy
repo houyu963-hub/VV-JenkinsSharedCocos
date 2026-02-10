@@ -64,12 +64,16 @@ def call(ctx) {
                 """,
                 returnStdout: true
             ).trim()
+
+            echo "Raw output from gen_manifest_params.bat:"
+            echo getResult
             
             // 解析返回的环境变量
             getResult.eachLine { line ->
                 if (line.contains('=')) {
                     def (key, value) = line.split('=', 2)
                     ctx.env[key.trim()] = value.trim()
+                    echo "Set Jenkins env: ${key.trim()} = ${value.trim()}"
                 }
             }
             
