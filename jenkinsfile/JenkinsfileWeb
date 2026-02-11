@@ -15,7 +15,7 @@ pipeline {
   }
 
   stages {
-    stage('Start') {
+    stage('Cocoscreator') {
       steps { cocosPipeline(this) }
     }
 

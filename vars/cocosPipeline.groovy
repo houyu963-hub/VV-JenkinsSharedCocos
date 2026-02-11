@@ -49,7 +49,7 @@ def call(ctx) {
         """
     }
     
-    stage('Get Hotupdate Parameters') {
+    stage('Hotupdate Parameters') {
         script {
             // 获取热更新参数
             def getResult = bat(
@@ -83,17 +83,17 @@ def call(ctx) {
         }
     }
     
-    stage('Update Manifest') {
+    stage('Hotupdate Manifest') {
         bat """
         call ${ctx.env.BAT_ROOT}/gen_manifest.bat ^
              ${ctx.params.bundle} ^
              ${ctx.env.LAST_VERSION} ^
-             "${ctx.env.HOTUPDATE_URL}" ^
-             "${ctx.env.SAVE_MANIFEST_DIR}"
+             ${ctx.env.HOTUPDATE_URL} ^
+             ${ctx.env.SAVE_MANIFEST_DIR}
         """
     }
     
-    stage('Copy Hotupdate Resources') {
+    stage('Hotupdate Resources') {
         when {
             expression { return ctx.params.apk == false }
         }
