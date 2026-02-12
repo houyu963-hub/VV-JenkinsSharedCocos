@@ -15,7 +15,7 @@ def call(ctx) {
     ctx.env.JS_ROOT = 'tools/js'
     ctx.env.ARTIFACTS_DIR = '../../artifacts'
     
-    stage('GitSCM CocosGameClient') {
+    stage('GitSCM CocosClient') {
         checkout([
             $class: 'GitSCM',
             branches: [[name: ctx.params.git_ref]],
