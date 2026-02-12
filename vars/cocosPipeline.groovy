@@ -15,7 +15,7 @@ def call(ctx) {
     ctx.env.JS_ROOT = 'tools/js'
     ctx.env.ARTIFACTS_DIR = '../../artifacts'
     
-    stage('GitSCM') {
+    stage('GitSCM CocosGameClient') {
         checkout([
             $class: 'GitSCM',
             branches: [[name: ctx.params.git_ref]],
@@ -49,7 +49,7 @@ def call(ctx) {
         """
     }
     
-    stage('Hotupdate Parameters') {
+    stage('Hot Parameters') {
         script {
             // 获取热更新参数
             def getResult = bat(
@@ -83,7 +83,7 @@ def call(ctx) {
         }
     }
     
-    stage('Hotupdate Manifest') {
+    stage('Hot Manifest') {
         bat """
         call ${ctx.env.BAT_ROOT}/gen_manifest.bat ^
              ${ctx.params.bundle} ^
@@ -93,16 +93,15 @@ def call(ctx) {
         """
     }
     
-    stage('Hotupdate Resources') {
-        when {
-            expression { return ctx.params.apk == false }
-        }
-        steps {
-            bat """
-            call ${ctx.env.BAT_ROOT}/copy_hotupdate_resources.bat ^
-                 ${ctx.params.bundle} ^
-                 "${ctx.env.SAVE_MANIFEST_DIR}"
-            """
+    stage('Hot Resources') {
+        script {
+            if (ctx.params.apk == false) {
+                bat """
+                call ${ctx.env.BAT_ROOT}/copy_hotupdate_resources.bat ^
+                    ${ctx.params.bundle} ^
+                    "${ctx.env.SAVE_MANIFEST_DIR}"
+                """
+            }
         }
     }
     
