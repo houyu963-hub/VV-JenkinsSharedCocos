@@ -65,9 +65,6 @@ def call(ctx) {
                 returnStdout: true
             ).trim()
 
-            echo "Raw output from gen_manifest_params.bat:"
-            echo getResult
-            
             // 解析返回的环境变量
             getResult.eachLine { line ->
                 if (line.contains('=')) {
