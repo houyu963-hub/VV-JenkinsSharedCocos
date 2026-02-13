@@ -64,20 +64,18 @@ def call(ctx) {
             returnStdout: true
             ).trim()
 
-            // 先把原始输出打印出来以便调试（查看 bat 实际输出内容）
             echo "Raw hotparams output:\\n${getResult}"
 
             // 安全的按行切分（避免 eachLine 的 CPS 问题）
             def lines = getResult.split('\\r?\\n')
             for (def line : lines) {
-            // 只解析像 KEY=VALUE 的行（大写字母/数字/下划线为主）
-            if (line ==~ /^[A-Z0-9_]+=.*$/) {
-                def parts = line.split('=', 2)
-                def key = parts[0].trim()
-                def value = parts.length > 1 ? parts[1].trim() : ''
-                env[key] = value
-                echo "Set Jenkins env: ${key} = ${value}"
-            }
+                // 只解析像 KEY=VALUE 的行（大写字母/数字/下划线为主）
+                if (line ==~ /^[A-Z0-9_]+=.*$/) {
+                    def parts = line.split('=', 2)
+                    def key = parts[0].trim()
+                    def value = parts.length > 1 ? parts[1].trim() : ''
+                    env[key] = value
+                }
             }
 
             echo "LAST_VERSION: ${env.LAST_VERSION}"
@@ -109,18 +107,17 @@ def call(ctx) {
     }
     
     stage('2nd Build') {
-        when {
-            expression { return ctx.params.apk == true }
-        }
-        steps {
-            bat """
-            call ${ctx.env.BAT_ROOT}/cocos_build.bat ^
-                 ${ctx.env.PLATFORM} ^
-                 ${ctx.params.channel} ^
-                 ${ctx.params.env} ^
-                 ${ctx.params.mode} ^
-                 "${ctx.env.CREATOR_PATH}"
-            """
+        script {
+            if (ctx.params.apk == true) {
+                bat """
+                call ${ctx.env.BAT_ROOT}/cocos_build.bat ^
+                    ${ctx.env.PLATFORM} ^
+                    ${ctx.params.channel} ^
+                    ${ctx.params.env} ^
+                    ${ctx.params.mode} ^
+                    "${ctx.env.CREATOR_PATH}"
+                """
+            }
         }
     }
 }
