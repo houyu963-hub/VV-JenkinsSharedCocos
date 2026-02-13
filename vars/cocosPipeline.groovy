@@ -51,32 +51,31 @@ def call(ctx) {
     
     stage('Hot Parameters') {
         script {
-            // 获取热更新参数
             def getResult = bat(
                 script: """
                 call ${ctx.env.BAT_ROOT}/gen_manifest_params.bat ^
-                     ${ctx.env.PLATFORM} ^
-                     ${ctx.params.channel} ^
-                     ${ctx.params.env} ^
-                     ${ctx.params.bundle} ^
-                     ${ctx.params.apk.toString().toLowerCase()} ^
-                     ${ctx.env.ARTIFACTS_DIR}
+                    ${ctx.env.PLATFORM} ^
+                    ${ctx.params.channel} ^
+                    ${ctx.params.env} ^
+                    ${ctx.params.bundle} ^
+                    ${ctx.params.apk.toString().toLowerCase()} ^
+                    ${ctx.env.ARTIFACTS_DIR}
                 """,
                 returnStdout: true
             ).trim()
 
-            // 解析返回的环境变量
+            // 仅匹配大写字母数字下划线开头的 KEY=VALUE 行
             getResult.eachLine { line ->
-                if (line.contains('=')) {
+                if (line ==~ /^[A-Z0-9_]+=.*$/) {
                     def (key, value) = line.split('=', 2)
-                    ctx.env[key.trim()] = value.trim()
+                    env[key.trim()] = value.trim()
                     echo "Set Jenkins env: ${key.trim()} = ${value.trim()}"
                 }
             }
-            
-            echo "LAST_VERSION: ${ctx.env.LAST_VERSION}"
-            echo "HOTUPDATE_URL: ${ctx.env.HOTUPDATE_URL}"
-            echo "SAVE_MANIFEST_DIR: ${ctx.env.SAVE_MANIFEST_DIR}"
+
+            echo "LAST_VERSION: ${env.LAST_VERSION}"
+            echo "HOTUPDATE_URL: ${env.HOTUPDATE_URL}"
+            echo "SAVE_MANIFEST_DIR: ${env.SAVE_MANIFEST_DIR}"
         }
     }
     
