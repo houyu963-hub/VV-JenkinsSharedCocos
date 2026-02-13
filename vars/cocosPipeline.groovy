@@ -52,25 +52,32 @@ def call(ctx) {
     stage('Hot Parameters') {
         script {
             def getResult = bat(
-                script: """
-                call ${ctx.env.BAT_ROOT}/gen_manifest_params.bat ^
-                    ${ctx.env.PLATFORM} ^
-                    ${ctx.params.channel} ^
-                    ${ctx.params.env} ^
-                    ${ctx.params.bundle} ^
-                    ${ctx.params.apk.toString().toLowerCase()} ^
-                    ${ctx.env.ARTIFACTS_DIR}
-                """,
-                returnStdout: true
+            script: """
+            call ${ctx.env.BAT_ROOT}/gen_manifest_params.bat ^
+                ${ctx.env.PLATFORM} ^
+                ${ctx.params.channel} ^
+                ${ctx.params.env} ^
+                ${ctx.params.bundle} ^
+                ${ctx.params.apk.toString().toLowerCase()} ^
+                ${ctx.env.ARTIFACTS_DIR}
+            """,
+            returnStdout: true
             ).trim()
 
-            // 仅匹配大写字母数字下划线开头的 KEY=VALUE 行
-            getResult.eachLine { line ->
-                if (line ==~ /^[A-Z0-9_]+=.*$/) {
-                    def (key, value) = line.split('=', 2)
-                    env[key.trim()] = value.trim()
-                    echo "Set Jenkins env: ${key.trim()} = ${value.trim()}"
-                }
+            // 先把原始输出打印出来以便调试（查看 bat 实际输出内容）
+            echo "Raw hotparams output:\\n${getResult}"
+
+            // 安全的按行切分（避免 eachLine 的 CPS 问题）
+            def lines = getResult.split('\\r?\\n')
+            for (def line : lines) {
+            // 只解析像 KEY=VALUE 的行（大写字母/数字/下划线为主）
+            if (line ==~ /^[A-Z0-9_]+=.*$/) {
+                def parts = line.split('=', 2)
+                def key = parts[0].trim()
+                def value = parts.length > 1 ? parts[1].trim() : ''
+                env[key] = value
+                echo "Set Jenkins env: ${key} = ${value}"
+            }
             }
 
             echo "LAST_VERSION: ${env.LAST_VERSION}"
