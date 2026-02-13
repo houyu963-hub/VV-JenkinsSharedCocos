@@ -64,8 +64,6 @@ def call(ctx) {
             returnStdout: true
             ).trim()
 
-            echo "Raw hotparams output:\\n${getResult}"
-
             // 安全的按行切分（避免 eachLine 的 CPS 问题）
             def lines = getResult.split('\\r?\\n')
             for (def line : lines) {
@@ -74,13 +72,13 @@ def call(ctx) {
                     def parts = line.split('=', 2)
                     def key = parts[0].trim()
                     def value = parts.length > 1 ? parts[1].trim() : ''
-                    env[key] = value
+                    ctx.env[key] = value
                 }
             }
 
-            echo "LAST_VERSION: ${env.LAST_VERSION}"
+            echo "HOTUPDATE_VERSION: ${env.HOTUPDATE_VERSION}"
             echo "HOTUPDATE_URL: ${env.HOTUPDATE_URL}"
-            echo "SAVE_MANIFEST_DIR: ${env.SAVE_MANIFEST_DIR}"
+            echo "HOTUPDATE_DIR: ${env.HOTUPDATE_DIR}"
         }
     }
     

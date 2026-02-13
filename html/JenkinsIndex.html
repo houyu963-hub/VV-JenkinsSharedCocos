@@ -230,7 +230,7 @@
         el.style.display = show ? 'block' : 'none';
 
         const isWeb = platform === 'web';
-        const apkName = item.name || '未知APK';
+        const apkName = item.apkName || item.hotupdateVersion || '未知APK';
 
         el.innerHTML = `
     <div class="item-main">
@@ -250,10 +250,11 @@
       作者:${item.author}<br/>
       ${item.versionCode ? `版本号:${item.versionCode}<br/>` : ''}
       ${item.versionName ? `版本名:${item.versionName}<br/>` : ''}
-      ${item.versioHot ? `热更新版本:${item.versioHot}<br/>` : ''}
-      ${item.name ? `apk名:${item.name}<br/>` : ''}
+      ${item.apkName ? `apk名:${item.apkName}<br/>` : ''}
       ${item.path ? `apk路径:${item.path}<br/>` : ''}
       ${item.size ? `apk大小:${item.size}<br/>` : ''}
+      ${item.hotupdateVersion ? `热更新版本:${item.hotupdateVersion}<br/>` : ''}
+      ${item.hotupdateDir ? `热更新文件:${item.hotupdateDir}<br/>` : ''}
       时间:${item.time}<br/>
       Git:${item.commit}<br/>
       构建耗时:${item.duration}

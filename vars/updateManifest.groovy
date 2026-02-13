@@ -26,17 +26,19 @@ def call(ctx) {
     if (platform == "android") {
         def versionCode = ctx.env.ANDROID_VERSION_CODE as int
         def versionName = ctx.env.ANDROID_VERSION_NAME
-        def name = ctx.env.APK_NAME
+        def apkName = ctx.env.APK_NAME
         def path = ctx.env.APK_PATH
         def size = ctx.env.APK_SIZE
-        def hot = ctx.env.HOT_VERSION
+        def hotupdateVersion = ctx.env.HOTUPDATE_VERSION
+        def hotupdateDir = ctx.env.HOTUPDATE_DIR
 
         artifact = [
             author      : author,
             versionCode : versionCode,
             versionName : versionName,
-            versioHot   : hot,
-            name        : name,
+            apkName     : apkName,
+            hotupdateVersion: hotupdateVersion,
+            hotupdateDir    : hotupdateDir
             path        : path,
             size        : size,
             time        : time,
@@ -51,7 +53,7 @@ def call(ctx) {
         artifact = [
             author   : author,
             time     : time,
-            path      : path,
+            path     : path,
             commit   : commit,
             duration : duration
         ]
