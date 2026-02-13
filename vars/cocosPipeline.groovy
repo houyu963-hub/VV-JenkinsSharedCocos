@@ -117,6 +117,8 @@ def call(ctx) {
                     ${ctx.params.mode} ^
                     "${ctx.env.CREATOR_PATH}"
                 """
+            } else {
+                echo skip
             }
         }
     }
