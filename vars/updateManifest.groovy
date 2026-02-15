@@ -38,7 +38,7 @@ def call(ctx) {
             versionName : versionName,
             apkName     : apkName,
             hotupdateVersion: hotupdateVersion,
-            hotupdateDir    : hotupdateDir
+            hotupdateDir    : hotupdateDir,
             path        : path,
             size        : size,
             time        : time,

@@ -86,9 +86,9 @@ def call(ctx) {
         bat """
         call ${ctx.env.BAT_ROOT}/gen_manifest.bat ^
              ${ctx.params.bundle} ^
-             ${ctx.env.LAST_VERSION} ^
+             ${ctx.env.HOTUPDATE_VERSION} ^
              ${ctx.env.HOTUPDATE_URL} ^
-             ${ctx.env.SAVE_MANIFEST_DIR}
+             ${ctx.env.HOTUPDATE_DIR}
         """
     }
     
@@ -98,7 +98,7 @@ def call(ctx) {
                 bat """
                 call ${ctx.env.BAT_ROOT}/copy_hotupdate_resources.bat ^
                     ${ctx.params.bundle} ^
-                    "${ctx.env.SAVE_MANIFEST_DIR}"
+                    "${ctx.env.HOTUPDATE_DIR}"
                 """
             }
         }
