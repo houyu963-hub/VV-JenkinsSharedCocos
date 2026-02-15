@@ -32,7 +32,7 @@ def call(ctx) {
                     shallow: true              // 浅克隆
                 ],
                 // 清理工作区
-                [$class: 'CleanBeforeCheckout']// 在拉取代码之前清理工作区
+                // [$class: 'CleanBeforeCheckout']// 在拉取代码之前清理工作区
                 // [$class: 'CleanCheckout']   // 拉取代码时清理工作区
             ]
         ])
